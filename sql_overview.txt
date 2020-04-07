@@ -1,0 +1,17 @@
+        SELECT  UPPER(confirmed.country_region) AS country,
+                SUM(confirmed.{date}) AS confirmed_cases,
+                SUM(recovered.{date}) AS recovered_cases,
+                SUM(deaths.{date}) AS deaths
+          FROM `bigquery-public-data.covid19_jhu_csse_eu.confirmed_cases` AS confirmed
+          INNER JOIN `bigquery-public-data.covid19_jhu_csse_eu.recovered_cases` AS recovered
+          ON  (confirmed.province_state = recovered.province_state
+              OR (confirmed.province_state is NULL AND recovered.province_state is NULL))
+              AND confirmed.country_region = recovered.country_region
+          INNER JOIN `bigquery-public-data.covid19_jhu_csse_eu.deaths` AS deaths
+          ON  (confirmed.province_state = deaths.province_state
+              OR (confirmed.province_state is NULL AND deaths.province_state is NULL))
+              AND confirmed.country_region = deaths.country_region
+        WHERE UPPER(confirmed.country_region) LIKE '{}'
+	GROUP BY country
+        ORDER BY confirmed_cases + recovered_cases + deaths DESC
+        LIMIT 20
