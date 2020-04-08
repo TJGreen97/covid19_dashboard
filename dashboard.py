@@ -36,7 +36,7 @@ class CountryView:
         for dset in dsets:
             print("line country: {}".format(self.country))
             print(dset)
-            print(cq.country_data)
+            # print(cq.country_data)
             if (cq.country_data[dset] is None) or (self.country.title() not in cq.country_data[dset].columns):
                 print("Fetching {}'s '{}' Data...".format(self.country, dset))
                 data = cq.country_query(dset, self.country)
@@ -313,6 +313,7 @@ def update_country(_, clickData, country):
     [dash.dependencies.State('country-heading', 'children')]
 )
 def update_dset(dset, country):
+    print(cv)
     print("start of update dset {}".format(cv.country))
     ctx = dash.callback_context
     print("checklist changed")
