@@ -307,9 +307,10 @@ def update_country(_, clickData, country):
 
 @app.callback(
     dash.dependencies.Output('country-rates', 'figure'),
-    [dash.dependencies.Input('country-checklist', 'value')]
+    [dash.dependencies.Input('country-checklist', 'value')],
+    [dash.dependencies.State('country-heading', 'children')]
 )
-def update_dset(dset):
+def update_dset(dset, country):
     ctx = dash.callback_context
     print("checklist changed")
     print(ctx.triggered[0])
@@ -318,6 +319,7 @@ def update_dset(dset):
     else:
         print("checklist country: {}".format(cv.country))
         print(dset)
+        cv.country = country
         return cv.update_line(dset)
 
 
