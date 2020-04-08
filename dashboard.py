@@ -107,7 +107,7 @@ class CountryView:
 
 
 cv = CountryView()
-
+print("does it do everything twice?")
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -323,7 +323,7 @@ def update_dset(dset):
 
 
 
-
+print("what does it do with this?")
 
 if __name__ == '__main__':
     app.run_server(debug=True)
