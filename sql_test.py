@@ -12,7 +12,7 @@ class CovidQuery:
   def __init__(self):
     self.client = bigquery.Client()
     self.last_column = (datetime.now()).strftime('_%#m_%#d_%y')
-    self.sql_overview = open("sql\sql_overview.txt", "r").read()
+    self.sql_overview = open("sql/sql_overview.txt", "r").read()
     self.overview = self.query_overview()
     self.country_data = dict.fromkeys(['confirmed_cases', 'recovered_cases', 'deaths'])
 
