@@ -28,8 +28,9 @@ class CountryView:
         if dsets == []:
             return fig
         for dset in dsets:
-            print(self.country)
+            print("line country: {}".format(self.country))
             print(dset)
+            print(cq.country_data)
             if (cq.country_data[dset] is None) or (self.country.title() not in cq.country_data[dset].columns):
                 print("Fetching {}'s '{}' Data...".format(self.country, dset))
                 data = cq.country_query(dset, self.country)
@@ -74,6 +75,7 @@ class CountryView:
         return fig
 
     def update_pie(self):
+        print("pie country: {}".format(self.country))
         self.country = self.country.upper()
         data = self.get_pie_data()
         labels = data.columns.values.tolist()
@@ -297,6 +299,7 @@ def update_country(_, clickData, country):
         cv.country = country
     elif clickData is not None:
         cv.country = clickData['points'][0]['label']
+    print(cv.country)
     return cv.update_pie(), dset, cv.country.title(), cv.country.title()
 
 
