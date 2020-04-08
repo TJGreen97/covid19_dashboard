@@ -28,6 +28,8 @@ class CountryView:
         if dsets == []:
             return fig
         for dset in dsets:
+            print(self.country)
+            print(dset)
             if (cq.country_data[dset] is None) or (self.country.title() not in cq.country_data[dset].columns):
                 print("Fetching {}'s '{}' Data...".format(self.country, dset))
                 data = cq.country_query(dset, self.country)
@@ -304,9 +306,12 @@ def update_country(_, clickData, country):
 )
 def update_dset(dset):
     ctx = dash.callback_context
+    print(ctx.triggered[0])
     if ctx.triggered[0]['value'] is None:
         raise PreventUpdate
     else:
+        print(cv.country)
+        print(dset)
         return cv.update_line(dset)
 
 
@@ -316,7 +321,4 @@ def update_dset(dset):
 
 
 if __name__ == '__main__':
-    # print('App Starting')
-    # cq = CovidQuery()
-    # cv = CountryView()
     app.run_server(debug=True)
