@@ -16,6 +16,7 @@ bar_color = ['#3141bd', '#32a852', '#d12626']
 color_select = dict(zip(dset_order, bar_color))
 
 
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
@@ -299,8 +300,12 @@ class CountryView:
         data = data.drop('country', axis=1)
         return data
 
+cq = CovidQuery()
+cv = CountryView()
+
+
 if __name__ == '__main__':
-    print('App Starting')
-    cq = CovidQuery()
-    cv = CountryView()
+    # print('App Starting')
+    # cq = CovidQuery()
+    # cv = CountryView()
     app.run_server(debug=True)
