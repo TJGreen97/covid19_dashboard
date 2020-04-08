@@ -4,13 +4,12 @@ from datetime import datetime, timedelta
 import pandas as pd
 from datetime import datetime
 import os
-
-# os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="my-covid-project.json"
-
+import platform
 
 class CovidQuery:
   def __init__(self):
     self.client = bigquery.Client()
+    print(platform.system())
     self.last_column = (datetime.now()).strftime('_%-m_%-d_%y')
     self.sql_overview = open("sql/sql_overview.txt", "r").read()
     self.overview = self.query_overview()
