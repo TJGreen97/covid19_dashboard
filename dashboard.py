@@ -22,6 +22,7 @@ cq = CovidQuery()
 class CountryView:
     def __init__(self):
         self.country = 'Us'
+        print("cv has been initialised")
 
     def update_line(self, dsets):
         fig = go.Figure()

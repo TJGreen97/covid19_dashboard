@@ -8,6 +8,7 @@ import platform
 
 class CovidQuery:
   def __init__(self):
+    print("cq has been initalised")
     self.client = bigquery.Client()
     if platform.system() == 'Windows':
       self.time_format = '_%#m_%#d_%y'
