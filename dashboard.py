@@ -316,7 +316,7 @@ def update_dset(dset, country):
     print("start of update dset {}".format(cv.country))
     ctx = dash.callback_context
     print("checklist changed")
-    print(ctx.triggered[0])
+    print(ctx.triggered)
     if ctx.triggered[0]['value'] is None:
         raise PreventUpdate
     else:
@@ -333,4 +333,4 @@ def update_dset(dset, country):
 print("what does it do with this?")
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=False)
