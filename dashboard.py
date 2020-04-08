@@ -93,6 +93,7 @@ class CountryView:
                         marker=dict(colors=[color_select[i] for i in labels])
                         ))
         fig.update_layout(title='{} Cases'.format(self.country.title()))
+        print("end of pie {}".format(self.country))
         return fig
 
     def get_pie_data(self):
