@@ -295,13 +295,14 @@ def update_bar(dset, limit):
     [dash.dependencies.State('choose-country', 'value')]
 )
 def update_country(_, clickData, country):
+    print("start of update country {}".format(cv.country)
     dset = ['confirmed_cases']
     ctx = dash.callback_context
     if ctx.triggered[0]['prop_id'].split('.')[0] == 'select-country' and country != '':
         cv.country = country
     elif clickData is not None:
         cv.country = clickData['points'][0]['label']
-    print(cv.country)
+    print("end of update country {}".format(cv.country)
     return cv.update_pie(), dset, cv.country.title(), cv.country.title()
 
 
@@ -311,15 +312,17 @@ def update_country(_, clickData, country):
     [dash.dependencies.State('country-heading', 'children')]
 )
 def update_dset(dset, country):
+    print("start of update dset {}".format(cv.country)
     ctx = dash.callback_context
     print("checklist changed")
     print(ctx.triggered[0])
     if ctx.triggered[0]['value'] is None:
         raise PreventUpdate
     else:
-        print("checklist country: {}".format(cv.country))
+        print("middle of update dset {}".format(cv.country)
         print(dset)
         cv.country = country
+        print("end of update dset {}".format(cv.country)
         return cv.update_line(dset)
 
 
