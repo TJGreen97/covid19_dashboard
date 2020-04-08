@@ -12,6 +12,11 @@ from datetime import datetime
 import os
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="config/my-covid-project.json"
 
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
+
 dset_order = ['confirmed_cases', 'recovered_cases', 'deaths']
 bar_color = ['#3141bd', '#32a852', '#d12626']
 color_select = dict(zip(dset_order, bar_color))
@@ -109,10 +114,6 @@ class CountryView:
 cv = CountryView()
 print("does it do everything twice?")
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-server = app.server
 
 
 app.layout = html.Div(children=[
