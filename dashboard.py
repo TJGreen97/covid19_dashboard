@@ -300,12 +300,12 @@ class CountryView:
         data = data.drop('country', axis=1)
         return data
 
-cq = CovidQuery()
-cv = CountryView()
+# cq = CovidQuery()
+# cv = CountryView()
 
 
 if __name__ == '__main__':
     # print('App Starting')
-    # cq = CovidQuery()
-    # cv = CountryView()
+    cq = CovidQuery()
+    cv = CountryView()
     app.run_server(debug=True)
