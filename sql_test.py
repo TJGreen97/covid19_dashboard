@@ -5,7 +5,7 @@ import pandas as pd
 from datetime import datetime
 import os
 
-# os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=r"config\my-covid-project.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="my-covid-project.json"
 
 
 class CovidQuery:
