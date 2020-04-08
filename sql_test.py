@@ -23,19 +23,17 @@ class CovidQuery:
     overview = []
     n = 0
     while n < 5:
-      print(self.last_column)
       try :
         sql = self.sql_overview.format("%", date=self.last_column)
         overview = self.client.query(sql).to_dataframe()
-        break
-        # return overview
+        return overview
       except BadRequest:
         self.last_column = (datetime.strptime(self.last_column, '_%m_%d_%y') - 
                             timedelta(1)).strftime(self.time_format)
         n += 1
-    # self.last_column = "_4_7_20"
-    # sql = self.sql_overview.format("%", date=self.last_column)
-    # overview = self.client.query(sql).to_dataframe()
+    self.last_column = "_4_7_20"
+    sql = self.sql_overview.format("%", date=self.last_column)
+    overview = self.client.query(sql).to_dataframe()
     return overview
 
   def get_country(self, country):
@@ -74,6 +72,5 @@ class CovidQuery:
     results = results.squeeze('rows')
     results = results.rename(results.name.title())
     self.country_data[dset] = pd.concat([self.country_data[dset], results], axis=1)
-    # print(results)
     return results
 
