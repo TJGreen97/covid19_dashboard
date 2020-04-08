@@ -17,8 +17,9 @@ class CovidQuery:
     self.country_data = dict.fromkeys(['confirmed_cases', 'recovered_cases', 'deaths'])
 
   def query_overview(self):
-    n=0
-    while n<3:
+    overview = []
+    while overview == []:
+      print(overview)
       try :
         sql = self.sql_overview.format("%", date=self.last_column)
         overview = self.client.query(sql).to_dataframe()
@@ -26,7 +27,7 @@ class CovidQuery:
       except BadRequest:
         self.last_column = (datetime.strptime(self.last_column, '_%m_%d_%y') - 
                             timedelta(1)).strftime('_%#m_%#d_%y')
-        n += 1
+
     return overview
 
   def get_country(self, country):
