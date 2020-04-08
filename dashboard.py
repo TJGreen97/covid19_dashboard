@@ -10,7 +10,7 @@ from sql_test import CovidQuery
 import pandas as pd
 from datetime import datetime
 import os
-# os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="my-covid-project.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="config/my-covid-project.json"
 
 dset_order = ['confirmed_cases', 'recovered_cases', 'deaths']
 bar_color = ['#3141bd', '#32a852', '#d12626']
