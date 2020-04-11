@@ -3,6 +3,8 @@ from google.api_core.exceptions import BadRequest
 from datetime import datetime, timedelta
 import platform
 import pandas as pd
+import numpy as np
+
 class SQL:
     def __init__(self):
         self.client = bigquery.Client()
@@ -68,6 +70,8 @@ class SQL:
         return result
 
     def country_data_query(self, country, dset):
+
+        
         sql = """
             SELECT *
             FROM `bigquery-public-data.covid19_jhu_csse_eu.{}`
@@ -85,3 +89,31 @@ class SQL:
         results = results.squeeze('rows')
         results = results.rename(dset)
         return results
+
+    def country_data_query2(self, country):
+        date_list = self._get_date_list()
+        date_string = ', '.join(['SUM(' + x + ') AS ' + x for x in date_list])
+        sql = """
+            SELECT {date_list}, 'confirmed_cases' dset FROM `bigquery-public-data.covid19_jhu_csse_eu.confirmed_cases`
+            WHERE UPPER(country_region) = '{country}'
+            UNION ALL
+            SELECT {date_list}, 'recovered_cases' FROM `bigquery-public-data.covid19_jhu_csse_eu.recovered_cases`
+            WHERE UPPER(country_region) = '{country}'
+            UNION ALL
+            SELECT {date_list}, 'deaths' FROM `bigquery-public-data.covid19_jhu_csse_eu.deaths`
+            WHERE UPPER(country_region) = '{country}'
+            """.format(date_list=date_string, country=country.upper())
+        try:
+            results = self.client.query(sql).to_dataframe()
+        except BadRequest:
+            print("Data unavailable")
+            return []
+        results.set_index('dset', inplace=True)
+        results.columns = pd.to_datetime(results.columns, format="_%m_%d_%y")
+        return results
+
+    def _get_date_list(self):
+        last_date = datetime.strptime(self.last_column, '_%m_%d_%y')
+        datetime_list = pd.date_range(start="2020-01-22", end=last_date).tolist()
+        datelist = [date.strftime(self._get_time_format()) for date in datetime_list]
+        return datelist

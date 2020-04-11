@@ -54,10 +54,11 @@ def get_country_overview(country):
 @cache.memoize()
 def get_country_data(country):
     print("Getting {} data".format(country))
-    country_data = pd.DataFrame()
-    for dset in dset_order:
-        data = sql.country_data_query(country, dset)
-        country_data = pd.concat([country_data, data], axis=1)
+    country_data = sql.country_data_query2(country)
+    # country_data = pd.DataFrame()
+    # for dset in dset_order:
+    #     data = sql.country_data_query(country, dset)
+    #     country_data = pd.concat([country_data, data], axis=1)
     return country_data.to_json(orient='split')
 
 @app.callback(
@@ -76,8 +77,9 @@ def update_bar(dset, limit, fig):
     dset = [value for value in dset_order if value in dset]
     x = data['country'].str.title()
     for category in dset:
-        fig['data'].append(dict(type='bar', x = x, y = data[category],
-                                name = category, marker_color=color_select[category]))
+        fig['data'].append(dict(dict(marker=dict(color=color_select[category])), type='bar',
+                                x = x, y = data[category],
+                                name = category))
     return fig
 
 
@@ -165,7 +167,6 @@ def get_pie_data(country):
             raise PreventUpdate
     else:
         result = overview_data.loc[overview_data['country'] == country]
-    # print(result)
     return result
 
 
@@ -176,7 +177,7 @@ def update_line(dsets, country, fig):
     data = pd.read_json(get_country_data(country), orient='split')
     fig = go.Figure()
     for dset in dsets:
-        y = data[dset]
+        y = data.loc[dset]
         y = y[y!=0]
         x = pd.to_datetime(y.index)
         fig.add_trace(go.Scatter(
