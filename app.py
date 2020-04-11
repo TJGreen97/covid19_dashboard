@@ -14,8 +14,8 @@ from sql.queries import SQL
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="config/my-covid-project.json"
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-dset_order = ['confirmed_cases', 'recovered_cases', 'deaths']
-bar_color = ['#3141bd', '#32a852', '#d12626']
+dset_order = ['confirmed_cases', 'active_cases', 'recovered_cases', 'deaths']
+bar_color = ['#3141bd', '#2ad8db', '#32a852', '#d12626']
 color_select = dict(zip(dset_order, bar_color))
 
 sql = SQL()
@@ -42,7 +42,8 @@ def get_global_data():
     print("Getting global data")    
     global_data = pd.DataFrame()
     for dset in dset_order:
-        global_data = pd.concat([global_data, sql.global_total(dset)], axis=1)
+        if dset != 'active_cases':
+            global_data = pd.concat([global_data, sql.global_total(dset)], axis=1)
     return global_data.to_json(orient='split')
 
 @cache.memoize()
@@ -71,10 +72,10 @@ def update_bar(dset, limit, fig):
     # print(ctx.triggered)
     fig['data'] = []
     if dset == []:
-        return fig
+        raise PreventUpdate
     data = pd.read_json(get_overview_data(), orient='split')
     data = data.truncate(after=limit-1)
-    dset = [value for value in dset_order if value in dset]
+    dset = [value for value in dset_order if value in dset and value != 'confirmed_cases']
     x = data['country'].str.title()
     for category in dset:
         fig['data'].append(dict(dict(marker=dict(color=color_select[category])), type='bar',
@@ -145,8 +146,8 @@ def update_line_dsets(dset, country, fig):
 def update_pie(country, fig):
     country = country.upper()
     data = get_pie_data(country)
-    # print(data)
     country = data.pop('country').iloc[0]
+    data = data.drop('confirmed_cases', axis=1)
     labels = data.columns.values.tolist()
     fig['data'] = [dict(type='pie',
                     labels=labels,

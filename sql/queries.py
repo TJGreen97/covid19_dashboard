@@ -32,7 +32,7 @@ class SQL:
                 date_attempt = (datetime.strptime(date_attempt, '_%m_%d_%y') - 
                                     timedelta(1)).strftime(self._get_time_format())
             n += 1
-        # TO DO: raise an error in future
+        # TO DO: raise an error
         return date_attempt
 
     def overview_query(self):

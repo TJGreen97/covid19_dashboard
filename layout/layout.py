@@ -37,11 +37,12 @@ layout = html.Div(children=[
         dcc.Checklist(
         id='overview-checklist',
         options=[
-            dict(label='Confirmed Cases', value='confirmed_cases'),
+            dict(label='Active Cases', value='active_cases'),
+            # dict(label='Confirmed Cases', value='confirmed_cases'),
             dict(label='Recovered Cases', value='recovered_cases'),
-            dict(label='Deaths', value='deaths')
+            dict(label='Deaths', value='deaths'),
         ],
-        value=['confirmed_cases'],
+        value=['active_cases'],
         labelStyle=dict(display='inline-block'),
         style=dict(width='20%',
                     paddingTop='10px')
