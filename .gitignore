@@ -1,6 +1,9 @@
 covid/
-__pycache__/
-.vscode/
-*.pyc
-.DS_Store
 .env
+
+*.pyc
+__pycache__/
+
+.vscode/
+.DS_Store
+instance/
