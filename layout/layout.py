@@ -17,18 +17,15 @@ layout = html.Div(children=[
         ],
             style=dict(marginRight='10%')    
         ),
-        html.Div([
-            dcc.Loading(type='circle', 
-                        children= dcc.Graph(id='global-stats',
-                                            config={'displayModeBar': False},
-                                            figure=go.Figure(layout=dict(margin={'l':0,'r':0,'t':0,'b':0},
-                                                                height=100,
-                                                                paper_bgcolor = 'rgba(0,0,0,0)',
-                                                                plot_bgcolor = 'rgba(0,0,0,0)'))
-                                            )
-            )
+        html.Div([dcc.Graph(id='global-stats',
+                            config={'displayModeBar': False},
+                            figure=go.Figure(layout=dict(margin={'l':0,'r':0,'t':0,'b':0},
+                                                height=100,
+                                                paper_bgcolor = 'rgba(0,0,0,0)',
+                                                plot_bgcolor = 'rgba(0,0,0,0)'))
+                            )
         ],
-            style=dict(width='60%')
+            style=dict(width='60%', textAlign='center')
         )
     ],
         style=dict(display='flex', backgroundColor='lightblue')
@@ -79,18 +76,30 @@ layout = html.Div(children=[
     html.Div([
         html.H2(id='country-heading', children='Country View', style=dict(textAlign='center')),
         html.Div([
-            html.H4(children='Select Country:', style=dict(width='50%')),
-            dcc.Input( 
-                            id="choose-country",
-                            type="text",
-                            value="US",
-                            debounce=True,
-                            style=dict(width='20%')
-                            ),
-            html.Button('SELECT', id='select-country')
+            html.Div([
+                html.H4(children='Select Country:', style=dict(width='50%')),
+                dcc.Input( 
+                                id="choose-country",
+                                type="text",
+                                value="US",
+                                debounce=True,
+                                style=dict(width='50%')
+                                ),
+                html.Button('SELECT', id='select-country')
+            ],
+                style=dict(textAlign='left', marginBottom='1%', width='31%')
+            ),
+            dcc.Graph(id='country-stats',
+                        config={'displayModeBar': False},
+                        figure=go.Figure(layout=dict(margin={'l':0,'r':0,'t':0,'b':0},
+                                            height=100, width=1000,
+                                            paper_bgcolor = 'rgba(0,0,0,0)',
+                                            plot_bgcolor = 'rgba(0,0,0,0)'))
+                        )
         ],
-            style=dict(textAlign='left', marginBottom='1%')
+            style=dict(display='flex')
         ),
+
         dcc.Loading(id='country-loading',
                     type='circle',
                     children=

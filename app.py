@@ -40,10 +40,11 @@ def get_overview_data():
 @cache.memoize()
 def get_global_data():
     print("Getting global data")    
-    global_data = pd.DataFrame()
-    for dset in dset_order:
-        if dset != 'active_cases':
-            global_data = pd.concat([global_data, sql.global_total(dset)], axis=1)
+    global_data = sql.global_total()
+    # global_data = pd.DataFrame()
+    # for dset in dset_order:
+    #     if dset != 'active_cases':
+    #         global_data = pd.concat([global_data, sql.global_total(dset)], axis=1)
     return global_data.to_json(orient='split')
 
 @cache.memoize()
@@ -75,7 +76,7 @@ def update_bar(dset, limit, fig):
         raise PreventUpdate
     data = pd.read_json(get_overview_data(), orient='split')
     data = data.truncate(after=limit-1)
-    dset = [value for value in dset_order if value in dset and value != 'confirmed_cases']
+    dset = [value for value in dset_order if value in dset]
     x = data['country'].str.title()
     for category in dset:
         fig['data'].append(dict(dict(marker=dict(color=color_select[category])), type='bar',
@@ -95,14 +96,18 @@ def page_load(_, fig):
     fig['data'] = []
     n = 0
     global_data = pd.read_json(get_global_data(), orient='split')
-    for (dset, total) in global_data.iteritems():
+    
+    for dset in dset_order:
         fig['data'].append(dict(type='indicator',
-                                mode = 'number',
+                                mode = 'number+delta',
                                 title = dict(text=dset),
-                                value = int(total),
-                                domain = {'x': [n, n+0.33], 'y': [0.1,0.6]})
+                                value = int(global_data.iloc[0][dset]),
+                                delta = {'reference': int(global_data.iloc[1][dset]),
+                                        'increasing':{'color':'#FF4136'},
+                                        'decreasing':{'color':'#3D9970'}},
+                                domain = {'x': [n, n+0.25], 'y': [0.1,0.6]})
                             )
-        n += 0.33
+        n += 0.25
     disclaimer = 'Data last updated: {:%d/%m/%y}'.format(datetime.strptime(sql.last_column, '_%m_%d_%y'))
     return fig, disclaimer
 
@@ -110,22 +115,25 @@ def page_load(_, fig):
 @app.callback(
     [Output('country-store', 'data'), Output('country-pie', 'figure'),
     Output('country-checklist', 'value'), Output('country-heading', 'children'),
-    Output('choose-country', 'value')],
+    Output('choose-country', 'value'), Output('country-stats', 'figure')],
     [Input('select-country', 'n_clicks'), Input('overview-graph', 'clickData')],
-    [State('choose-country', 'value'), State('country-pie', 'figure')]
+    [State('choose-country', 'value'), State('country-pie', 'figure'),
+    State('country-stats', 'figure')]
 )
-def update_country(_, clickData, country, fig):
+def update_country(_, clickData, country, fig, stats_fig):
     dset = ['confirmed_cases']
     ctx = dash.callback_context
     # print(ctx.triggered)
     if ctx.triggered[0]['prop_id'].split('.')[0] == 'select-country' and country != '':
-        selected_country = country
+        selected_country = country.title()
     elif clickData is not None:
         selected_country = clickData['points'][0]['label']
     else: 
         selected_country = 'Us'
-    return (selected_country, update_pie(selected_country, fig),
-            dset, selected_country, selected_country)
+    data = get_country_totals(selected_country)
+    return (selected_country, update_pie(selected_country, data, fig),
+            dset, selected_country, selected_country,
+            update_country_stats(selected_country, data, stats_fig))
 
 
 @app.callback(
@@ -143,12 +151,15 @@ def update_line_dsets(dset, country, fig):
     return update_line(dset, country, fig)
 
 
-def update_pie(country, fig):
+def update_pie(country, data, fig):
     country = country.upper()
-    data = get_pie_data(country)
+    # data = get_pie_data(country)
     country = data.pop('country').iloc[0]
-    data = data.drop('confirmed_cases', axis=1)
-    labels = data.columns.values.tolist()
+    # data.drop('confirmed_cases', axis=1, inplace=True)
+    # data.drop(data.columns[len(data.columns)-4], axis=1, inplace=True)
+    labels = ['active_cases', 'recovered_cases', 'deaths']
+    data = data[labels]
+    # labels = data.columns.values.tolist()
     fig['data'] = [dict(type='pie',
                     labels=labels,
                     values=data.iloc[0],
@@ -158,7 +169,19 @@ def update_pie(country, fig):
     fig['layout']['title'] = '{} Cases'.format(country.title())
     return fig
 
-def get_pie_data(country):
+# def get_pie_data(country):
+#     overview_data = pd.read_json(get_overview_data(), orient='split')
+#     if country not in overview_data['country'].values:
+#         print("Fetching Data...")
+#         result = pd.read_json(get_country_overview(country), orient='split')
+#         if result is None:
+#             print("Data not found")
+#             raise PreventUpdate
+#     else:
+#         result = overview_data.loc[overview_data['country'] == country]
+#     return result
+
+def get_country_totals(country):
     overview_data = pd.read_json(get_overview_data(), orient='split')
     if country not in overview_data['country'].values:
         print("Fetching Data...")
@@ -169,7 +192,6 @@ def get_pie_data(country):
     else:
         result = overview_data.loc[overview_data['country'] == country]
     return result
-
 
 def update_line(dsets, country, fig):
     layout = fig['layout']
@@ -190,6 +212,22 @@ def update_line(dsets, country, fig):
     fig.update_layout(layout)
     return fig
 
+def update_country_stats(country, data, fig):
+    fig['data'] = []
+    n = 0
+    
+    for dset in dset_order:
+        fig['data'].append(dict(type='indicator',
+                                mode = 'number+delta',
+                                title = dict(text=dset),
+                                value = int(data[dset]),
+                                delta = {'reference': int(data['ref_'+ dset]),
+                                        'increasing':{'color':'#FF4136'},
+                                        'decreasing':{'color':'#3D9970'}},
+                                domain = {'x': [n, n+0.2], 'y': [0.1,0.6]})
+                            )
+        n += 0.2
+    return fig
 
 if __name__ == '__main__':
     app.run_server(debug=True)

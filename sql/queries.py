@@ -35,10 +35,14 @@ class SQL:
         # TO DO: raise an error
         return date_attempt
 
+    def _second_last_column(self):
+        return (datetime.strptime(self.last_column, '_%m_%d_%y') - 
+                                    timedelta(1)).strftime(self._get_time_format())
+
     def overview_query(self):
         print("Making overview query")
         overview = []
-        sql = self.sql_overview.format("%", date=self.last_column)
+        sql = self.sql_overview.format("%", date=self.last_column, ref=self._second_last_column())
         try:
             overview = self.client.query(sql).to_dataframe()
         except BadRequest:
@@ -46,49 +50,66 @@ class SQL:
             return []     
         return overview
 
-    def global_total(self, dset):
+    def global_total(self):
         sql = """
-                SELECT SUM({}) AS {dset}
-                FROM `bigquery-public-data.covid19_jhu_csse_eu.{dset}`
-            """.format(self.last_column, dset=dset)
+                SELECT SUM({date}) AS totals, 'deaths' AS dset, '{date}' AS id
+                FROM `bigquery-public-data.covid19_jhu_csse_eu.deaths` AS deaths
+                UNION ALL
+                SELECT SUM({date}), 'confirmed_cases', '{date}'
+                FROM `bigquery-public-data.covid19_jhu_csse_eu.confirmed_cases` AS confirmed_cases
+                UNION ALL
+                SELECT SUM({date}), 'recovered_cases', '{date}'
+                FROM `bigquery-public-data.covid19_jhu_csse_eu.recovered_cases` AS recovered_cases
+                UNION ALL
+                SELECT SUM({ref}), 'deaths' AS dset, '{ref}' AS id
+                FROM `bigquery-public-data.covid19_jhu_csse_eu.deaths` AS deaths
+                UNION ALL
+                SELECT SUM({ref}), 'confirmed_cases', '{ref}'
+                FROM `bigquery-public-data.covid19_jhu_csse_eu.confirmed_cases` AS confirmed_cases
+                UNION ALL
+                SELECT SUM({ref}), 'recovered_cases', '{ref}'
+                FROM `bigquery-public-data.covid19_jhu_csse_eu.recovered_cases` AS recovered_cases
+            """.format(date=self.last_column, ref=self._second_last_column())
         try:
             result = self.client.query(sql).to_dataframe()
         except BadRequest:
-            print("Data unavailable")
+            print("ERROR: Global Total Data Unavailable")
             return []
+        result = result.pivot(index='id', columns='dset', values='totals')
+        active = pd.DataFrame()
+        active['active_cases'] = result['confirmed_cases'] - result['deaths'] - result['recovered_cases']
+        result = pd.concat([result, active], axis=1)
         return result
     
     def country_overview(self, country):
-        sql = self.sql_overview.format(country.upper(), date=self.last_column)
+        sql = self.sql_overview.format(country.upper(), date=self.last_column, ref=self._second_last_column())
         try:
             result = self.client.query(sql).to_dataframe()
         except BadRequest:
-            print("Data unavailable")
+            print("ERROR: Overview Data Unavailable")
             return []
         print("Collected data for: {}".format(result['country'].values))
         # print(result)
         return result
 
-    def country_data_query(self, country, dset):
-
-        
-        sql = """
-            SELECT *
-            FROM `bigquery-public-data.covid19_jhu_csse_eu.{}`
-            WHERE UPPER(country_region) = '{}'
-            """.format(dset, country.upper())
-        try:
-            results = self.client.query(sql).to_dataframe()
-        except BadRequest:
-            print("Data unavailable")
-            return []
-        cols = [c for c in results.columns if c[0] != '_' and c[0] != 'c']
-        results = results.drop(columns=cols).rename(columns={'country_region': 'country'})
-        results = results.groupby('country', as_index=True).sum()
-        results.columns = pd.to_datetime(results.columns, format="_%m_%d_%y")
-        results = results.squeeze('rows')
-        results = results.rename(dset)
-        return results
+    # def country_data_query(self, country, dset):
+    #     sql = """
+    #         SELECT *
+    #         FROM `bigquery-public-data.covid19_jhu_csse_eu.{}`
+    #         WHERE UPPER(country_region) = '{}'
+    #         """.format(dset, country.upper())
+    #     try:
+    #         results = self.client.query(sql).to_dataframe()
+    #     except BadRequest:
+    #         print("Data unavailable")
+    #         return []
+    #     cols = [c for c in results.columns if c[0] != '_' and c[0] != 'c']
+    #     results = results.drop(columns=cols).rename(columns={'country_region': 'country'})
+    #     results = results.groupby('country', as_index=True).sum()
+    #     results.columns = pd.to_datetime(results.columns, format="_%m_%d_%y")
+    #     results = results.squeeze('rows')
+    #     results = results.rename(dset)
+    #     return results
 
     def country_data_query2(self, country):
         date_list = self._get_date_list()
