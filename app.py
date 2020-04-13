@@ -65,18 +65,18 @@ def get_country_data(country):
 
 @app.callback(
         Output('overview-graph', 'figure'),
-        [Input('overview-checklist', 'value'), Input('bar-limit', 'value')],
+        [Input('bar-limit', 'value')],
         [State('overview-graph', 'figure')]
     )
-def update_bar(dset, limit, fig):
+def update_bar(limit, fig):
     ctx = dash.callback_context
     # print(ctx.triggered)
     fig['data'] = []
-    if dset == [] or limit is None or limit < 2 or limit > 20:
+    if limit is None or limit < 2 or limit > 20:
         raise PreventUpdate
     data = pd.read_json(get_overview_data(), orient='split')
     data = data.truncate(after=limit-1)
-    dset = [value for value in dset_order if value in dset]
+    dset = [value for value in dset_order if value != 'confirmed_cases']
     x = data['country'].str.title()
     for category in dset:
         fig['data'].append(dict(dict(marker=dict(color=color_select[category], line={'width':'0'})), type='bar',
@@ -115,13 +115,13 @@ def page_load(_, fig):
 
 @app.callback(
     [Output('country-store', 'data'), Output('country-pie', 'figure'),
-    Output('country-checklist', 'value'), Output('country-heading', 'children'),
-    Output('choose-country', 'value'), Output('country-stats', 'figure')],
+    Output('country-heading', 'children'), Output('choose-country', 'value'), 
+    Output('country-stats', 'figure'), Output('country-rates', 'figure')],
     [Input('select-country', 'n_clicks'), Input('overview-graph', 'clickData')],
     [State('choose-country', 'value'), State('country-pie', 'figure'),
-    State('country-stats', 'figure')]
+    State('country-stats', 'figure'), State('country-rates', 'figure')]
 )
-def update_country(_, clickData, country, fig, stats_fig):
+def update_country(_, clickData, country, pie_fig, stats_fig, rates_fig):
     dset = ['confirmed_cases']
     ctx = dash.callback_context
     # print(ctx.triggered)
@@ -135,24 +135,25 @@ def update_country(_, clickData, country, fig, stats_fig):
     if selected_country == 'Us':
         selected_country = 'US'
     data = get_country_totals(selected_country)
-    return (selected_country, update_pie(selected_country, data, fig),
-            dset, selected_country, selected_country,
-            update_country_stats(selected_country, data, stats_fig))
+    return (selected_country, update_pie(selected_country, data, pie_fig),
+            selected_country, selected_country,
+            update_country_stats(selected_country, data, stats_fig),
+            update_line(country, rates_fig))
 
 
-@app.callback(
-    Output('country-rates', 'figure'),
-    [Input('country-checklist', 'value')],
-    [State('country-store', 'data'), State('country-rates', 'figure')]
-)
-def update_line_dsets(dset, country, fig):
-    ctx = dash.callback_context
-    # print(ctx.triggered)
-    if (ctx.triggered[0]['value'] is None
-        or dset == []):
-        raise PreventUpdate
-    print("Update line called")
-    return update_line(dset, country, fig)
+# @app.callback(
+#     Output('country-rates', 'figure'),
+#     [Input('country-checklist', 'value')],
+#     [State('country-store', 'data'), State('country-rates', 'figure')]
+# )
+# def update_line_dsets(dset, country, fig):
+#     ctx = dash.callback_context
+#     # print(ctx.triggered)
+#     if (ctx.triggered[0]['value'] is None
+#         or dset == []):
+#         raise PreventUpdate
+#     print("Update line called")
+#     return update_line(dset, country, fig)
 
 
 def update_pie(country, data, fig):
@@ -197,12 +198,13 @@ def get_country_totals(country):
         result = overview_data.loc[overview_data['country'] == country]
     return result
 
-def update_line(dsets, country, fig):
+def update_line(country, fig):
     layout = fig['layout']
     # layout['title'] = "{} Cases".format(country)
     # layout['xaxis']['rangeslider'] = {'visible': True}
     data = pd.read_json(get_country_data(country), orient='split')
     fig = go.Figure()
+    dsets = [value for value in dset_order if value != 'active_cases']
     for dset in dsets:
         y = data.loc[dset]
         y = y[y!=0]

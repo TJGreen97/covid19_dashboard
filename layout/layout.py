@@ -40,21 +40,22 @@ layout = html.Div(className= 'main-div',
             ], 
             style=dict(display='flex', width='40%')
             ),
-            html.H2(id='overview-heading', children='Overview Data', style=dict(marginTop='0px', width='30%', marginRight='160px')),
-            dcc.Checklist(
-                id='overview-checklist',
-                options=[
-                    dict(label='Active Cases', value='active_cases'),
-                    dict(label='Recovered Cases', value='recovered_cases'),
-                    dict(label='Deaths', value='deaths'),
-                ],
-                value=['active_cases'],
-                labelStyle=dict(display='inline-block', fontSize='1.5em', paddingRight='20px'),
-                inputStyle=dict(height=15, width=15),
-                style=dict(width='40%',
-                            # paddingTop='10px'
-                            )
-            ),
+            html.H2(id='overview-heading', children='Overview Data', style=dict(marginTop='0px', width='20%')),
+            html.H6('Select data view using the legends.', style=dict(marginTop='0px', width='40%', textAlign='right'))
+            # dcc.Checklist(
+            #     id='overview-checklist',
+            #     options=[
+            #         dict(label='Active Cases', value='active_cases'),
+            #         dict(label='Recovered Cases', value='recovered_cases'),
+            #         dict(label='Deaths', value='deaths'),
+            #     ],
+            #     value=['active_cases'],
+            #     labelStyle=dict(display='inline-block', fontSize='1.5em', paddingRight='20px'),
+            #     inputStyle=dict(height=15, width=15),
+            #     style=dict(width='40%',
+            #                 # paddingTop='10px'
+            #                 )
+            # ),
         ],
             className='bar-select-div'
         ),
@@ -114,18 +115,19 @@ layout = html.Div(className= 'main-div',
                 dcc.Loading(id="rates-loading", style=dict(backgroundColor='rgb(60,60,60)'),
                             children=
                     html.Div([
-                        dcc.Checklist(
-                                id='country-checklist',
-                                options=[
-                                    dict(label='Confirmed Cases', value='confirmed_cases'),
-                                    dict(label='Recovered Cases', value='recovered_cases'),
-                                    dict(label='Deaths', value='deaths')
-                                ],
-                                value=['confirmed_cases'],
-                                labelStyle=dict(display='inline-block', fontSize='1.3em', paddingRight='16px'),
-                                inputStyle=dict(height=13, width=13),
-                                style=dict(width='90%', textAlign='right', backgroundColor='rgba(0,0,0,0)')
-                                ),
+                        # dcc.Checklist(
+                        #         id='country-checklist',
+                        #         options=[
+                        #             dict(label='Confirmed Cases', value='confirmed_cases'),
+                        #             dict(label='Recovered Cases', value='recovered_cases'),
+                        #             dict(label='Deaths', value='deaths')
+                        #         ],
+                        #         value=['confirmed_cases'],
+                        #         labelStyle=dict(display='inline-block', fontSize='1.3em', paddingRight='16px'),
+                        #         inputStyle=dict(height=13, width=13),
+                        #         style=dict(width='90%', textAlign='right', backgroundColor='rgba(0,0,0,0)')
+                        #         ),
+                        html.H6('Select data view using the legends.', style=dict(marginTop='0px', width='100%', textAlign='right')),
                         dcc.Graph(id='country-rates',
                                                     config={'displayModeBar': False},
                                                     figure=go.Figure(
