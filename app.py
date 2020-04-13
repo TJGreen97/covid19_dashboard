@@ -52,7 +52,7 @@ def get_country_overview(country):
 @cache.memoize()
 def get_country_data(country):
     print("Getting {} data".format(country))
-    country_data = sql.country_data_query2(country)
+    country_data = sql.country_data_query(country)
     return country_data.to_json(orient="split")
 
 
