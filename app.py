@@ -23,7 +23,7 @@ sql = SQL()
 app = dash.Dash(__name__)#, external_stylesheets=external_stylesheets)
 server = app.server
 app.layout = layout
-
+app.title = "COVID19-Torran"
 cache = Cache()
 cache.init_app(server, config={
     'CACHE_TYPE': 'filesystem',
@@ -169,7 +169,10 @@ def update_pie(country, data, fig):
                     labels=labels,
                     values=data.iloc[0],
                     sort=False,
-                    marker=dict(colors=[color_select[i] for i in labels])
+                    marker=dict(colors=[color_select[i] for i in labels]),
+                    outsidetextfont=dict(color='rgb(228, 241, 250)'),
+                    insidetextfont=dict(color='rgb(228, 241, 250)'),
+                    hoverlabel={'bordercolor': 'rgb(228,241,250)', 'font':{'color':'rgb(228, 241, 250)'}}
                     )]
     # fig['layout']['title'] = '{} Cases'.format(country.title())
     return fig

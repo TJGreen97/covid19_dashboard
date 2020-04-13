@@ -32,42 +32,42 @@ layout = html.Div(className= 'main-div',
         className='header-div'
     ),
     html.Div([
-        html.Div([
-            html.Div([
-                html.H5(children='Number of Countries: ', style=dict(marginRight='8px')),
-                dcc.Input(id="bar-limit", type="number",
-                            min=2, max=20, value=10, style={'width': '10%'})
-            ], 
-            style=dict(display='flex', width='40%')
-            ),
-            html.H2(id='overview-heading', children='Overview Data', style=dict(marginTop='0px', width='20%')),
-            html.H6('Select data view using the legends.', style=dict(marginTop='0px', width='40%', textAlign='right'))
-        ],
-            className='bar-select-div'
-        ),
-        
+        html.H2(id='overview-heading', children='Overview Data', style=dict(marginTop='0px', textAlign='center')),
         dcc.Graph(id='overview-graph',
                 config={'displayModeBar': False},
                 figure=go.Figure(layout=dict(barmode='stack',
+                                            legend_title='Select Data to View:',
+                                            legend=dict(x=0,y=1),
                                             showlegend=True,
-                                            xaxis={'categoryorder':'total ascending', 'gridcolor': 'rgb(121, 117, 117)'},
-                                            paper_bgcolor = 'rgba(0,0,0,0)',
+                                            paper_bgcolor = 'rgb(45, 45, 45)',
                                             plot_bgcolor = 'rgba(0,0,0,0)',
                                             xaxis_title="Country",
                                             yaxis_title="Number of Cases",
                                             margin={'t':0},
+                                            # dragmode=False,
                                             font=dict(family="Courier New, monospace",
                                                         size=18,color='rgb(228, 241, 250)'),
-                                            yaxis=dict(gridcolor='rgb(121, 117, 117)'))
-                        )
-        )],
+                                            yaxis=dict(gridcolor='rgb(121, 117, 117)',
+                                                        fixedrange=True),
+                                             xaxis=dict(categoryorder='total ascending',
+                                                        gridcolor='rgb(121, 117, 117)',
+                                                        fixedrange=True),
+                        ))
+        ),
+        html.Div([
+            html.H5(children='Number of Countries in View:'),
+            html.Div([dcc.Slider(id='bar-limit', min=2, max=20, step=1, value=10,
+                        marks={2:'2', 4:'4', 6:'6', 8:'8', 10:'10', 12:'12', 14:'14', 16:'16', 18:'18', 20:'20'})],
+                        style=dict(width='60%', marginTop='10px')),
+        ], style=dict(display='flex'))
+        ],
         className='full-bar-div'
     ),
     
     html.Div([
         html.Div([
             html.Div([
-                html.H4(children='Select Country', style=dict(width='50%')),
+                html.H4(children='Select Country:', style=dict(width='50%')),
                 dcc.Input( 
                                 id="choose-country",
                                 type="text",
@@ -99,48 +99,52 @@ layout = html.Div(className= 'main-div',
         html.Div([
             html.Div([
                 dcc.Loading(id="rates-loading", style=dict(backgroundColor='rgb(60,60,60)'),
-                            children=
-                    html.Div([
-                        html.H6('Select data view using the legends.', style=dict(marginTop='0px', width='100%', textAlign='right')),
-                        dcc.Graph(id='country-rates',
-                                                    config={'displayModeBar': False},
-                                                    figure=go.Figure(
-                                                        layout=dict(
-                                                            xaxis_title='Date', yaxis_title='Number of Cases',
-                                                            showlegend=True, margin={'t':0},
-                                                            paper_bgcolor = 'rgb(60, 60, 60)',
-                                                            plot_bgcolor = 'rgb(60, 60, 60)',
-                                                            font=dict(family="Courier New, monospace",
-                                                                        size=18,color='rgb(228, 241, 250)'),
-                                                            yaxis=dict(gridcolor='rgb(121, 117, 117)'),
-                                                            xaxis=dict(gridcolor='rgb(121, 117, 117)',
-                                                                            tickformat = '%d/%m/%y',
-                                                                            type ='date',
-                                                                            rangeselector=dict(
-                                                                                buttons=list([
-                                                                                    dict(count=7,
-                                                                                        label='1w',
-                                                                                        step='day',
-                                                                                        stepmode='backward'),
-                                                                                    dict(count=1,
-                                                                                        label='1m',
-                                                                                        step='month',
-                                                                                        stepmode='backward'),
-                                                                                    dict(count=3,
-                                                                                        label='3m',
-                                                                                        step='month',
-                                                                                        stepmode='backward'),
-                                                                                    dict(step='all')
-                                                                                ]),bgcolor='rgb(55,55,55)',
-                                                                                activecolor='rgb(95, 95, 95)',
-                                                                                ),
-                                                                        )
-                                                                ))
-                                
-                                ),
-                    ],
-                        style=dict(backgroundColor='rgb(60,60,60)')
-                    ),
+                            children=[
+                        dcc.Graph(id='country-rates', style=dict(height='100%'),
+                                    config={'displayModeBar': False},
+                                    figure=go.Figure(
+                                        layout=dict(
+                                            xaxis_title='Date', yaxis_title='Number of Cases',
+                                            legend_title='Select Data to View:',
+                                            title=dict(text='Cumulative Number of Cases', 
+                                                        xanchor='center', x=0.5,
+                                                        yref='container', y=0),
+                                            legend=dict(x=0,y=1),
+                                            showlegend=True, margin={'t':0, 'b':150},
+                                            paper_bgcolor = 'rgb(60, 60, 60)',
+                                            plot_bgcolor = 'rgb(60, 60, 60)',
+                                            dragmode='pan',
+                                            font=dict(family="Courier New, monospace",
+                                                        size=18,color='rgb(228, 241, 250)'),
+                                            yaxis=dict(gridcolor='rgb(121, 117, 117)',
+                                                                    fixedrange=True),
+                                            xaxis=dict(gridcolor='rgb(121, 117, 117)',
+                                                            tickformat = '%d/%m/%y',
+                                                            tickangle=45,
+                                                            type ='date',
+                                                            rangeselector=dict(
+                                                                buttons=list([
+                                                                    dict(count=7,
+                                                                        label='1w',
+                                                                        step='day',
+                                                                        stepmode='backward'),
+                                                                    dict(count=1,
+                                                                        label='1m',
+                                                                        step='month',
+                                                                        stepmode='backward'),
+                                                                    dict(count=3,
+                                                                        label='3m',
+                                                                        step='month',
+                                                                        stepmode='backward'),
+                                                                    dict(step='all')
+                                                                ]),bgcolor='rgb(55,55,55)',
+                                                                activecolor='rgb(95, 95, 95)',
+                                                                x=1,y=1, xanchor='right'
+                                                                ),
+                                                        )
+                                                ))
+                
+                                )],
                         type="dot"
                 )
             ],
@@ -150,17 +154,18 @@ layout = html.Div(className= 'main-div',
                 dcc.Loading(id="pie-loading", style=dict(backgroundColor='rgb(60,60,60)'),
                             children=[dcc.Graph(id='country-pie', config={'displayModeBar': False},
                                                 figure=go.Figure(layout=dict(
-                                                                    margin={'l':0,'r':0,'t':0,'b':10},
+                                                                    title=dict(text='Current Distribution of Cases',
+                                                                                xanchor='center', x=0.5,
+                                                                                y=0, yref='container'),
+                                                                    legend=dict(x=0,y=0),
+                                                                    margin={'l':0,'r':0,'t':0,'b':30},
                                                                     font=dict(family="Courier New, monospace",
-                                                                    size=18,color='rgb(228, 241, 250)'),
+                                                                    size=18, color='rgb(228, 241, 250)'),
                                                                     paper_bgcolor = 'rgb(60, 60, 60)',
                                                                     plot_bgcolor = 'rgb(60, 60, 60)'))
-                            ),
-                                html.H6('Current Distribution of Cases',
-                                    style=dict(backgroundColor='rgb(60,60,60)', margin=0))
+                                    ),
                             ],
                             type="dot"),
-                
             ],
                 className='pie-div'
             ),
@@ -170,5 +175,7 @@ layout = html.Div(className= 'main-div',
     ],
         className='country-div'
     ),
-    html.H4(id='disclaimer', style=dict(padding='50px', textAlign='right', textSize='1.6em', backgroundColor='rgb(43, 33, 53)'))
-])
+    html.H4(id='disclaimer', style=dict(padding='50px', borderBottom='solid 20px rgb(15, 15, 15)',
+                                        margin='0', textAlign='right', textSize='1.6em',
+                                        backgroundColor='rgb(43, 33, 53)'))
+], style=dict(height='100%'))

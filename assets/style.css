@@ -58,3 +58,36 @@ Div {
     margin: 20px;
     padding: 20px;
 }
+/* 
+.rc-slider{
+    width: 500%;
+    margin: 0px;
+} */
+
+.rc-slider-track {
+    background-color: rgb(140, 126, 155);
+  }
+  
+  .rc-slider-dot-active {  
+    border: solid 2px rgb(43, 33, 53);
+  }
+  
+  .rc-slider-handle {
+    background-color: rgb(232, 235, 236);
+    border: solid 3px rgb(58, 23, 99)
+  }
+  
+  .rc-slider-handle:hover {
+    border-color: #432d77;
+  }
+  .rc-slider-mark-text {
+      color: rgb(232, 235, 236)
+
+  }
+  .rc-slider-handle:focus {
+    border-color: rgb(134, 4, 167);
+  }
+/* 
+  #country-rates.dash-graph {
+      height: 100%;
+  } */

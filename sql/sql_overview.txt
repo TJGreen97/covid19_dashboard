@@ -18,5 +18,5 @@ ON  (confirmed.province_state = deaths.province_state
         AND confirmed.country_region = deaths.country_region
 WHERE UPPER(confirmed.country_region) LIKE '{}'
 GROUP BY country
-ORDER BY confirmed_cases + recovered_cases + deaths DESC
+ORDER BY confirmed_cases DESC
 LIMIT 20
