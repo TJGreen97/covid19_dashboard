@@ -35,27 +35,13 @@ layout = html.Div(className= 'main-div',
         html.Div([
             html.Div([
                 html.H5(children='Number of Countries: ', style=dict(marginRight='8px')),
-                dcc.Input(id="bar-limit", type="number", #placeholder="input with range",
+                dcc.Input(id="bar-limit", type="number",
                             min=2, max=20, value=10, style={'width': '10%'})
             ], 
             style=dict(display='flex', width='40%')
             ),
             html.H2(id='overview-heading', children='Overview Data', style=dict(marginTop='0px', width='20%')),
             html.H6('Select data view using the legends.', style=dict(marginTop='0px', width='40%', textAlign='right'))
-            # dcc.Checklist(
-            #     id='overview-checklist',
-            #     options=[
-            #         dict(label='Active Cases', value='active_cases'),
-            #         dict(label='Recovered Cases', value='recovered_cases'),
-            #         dict(label='Deaths', value='deaths'),
-            #     ],
-            #     value=['active_cases'],
-            #     labelStyle=dict(display='inline-block', fontSize='1.5em', paddingRight='20px'),
-            #     inputStyle=dict(height=15, width=15),
-            #     style=dict(width='40%',
-            #                 # paddingTop='10px'
-            #                 )
-            # ),
         ],
             className='bar-select-div'
         ),
@@ -98,7 +84,7 @@ layout = html.Div(className= 'main-div',
         ],
             style=dict(display='flex')
         ),
-        dcc.Loading( type='dot', #style=dict(backgroundColor='rgb(60,60,60)'),
+        dcc.Loading( type='dot',
             children=
             html.Div([
                 dcc.Graph(id='country-stats', 
@@ -115,18 +101,6 @@ layout = html.Div(className= 'main-div',
                 dcc.Loading(id="rates-loading", style=dict(backgroundColor='rgb(60,60,60)'),
                             children=
                     html.Div([
-                        # dcc.Checklist(
-                        #         id='country-checklist',
-                        #         options=[
-                        #             dict(label='Confirmed Cases', value='confirmed_cases'),
-                        #             dict(label='Recovered Cases', value='recovered_cases'),
-                        #             dict(label='Deaths', value='deaths')
-                        #         ],
-                        #         value=['confirmed_cases'],
-                        #         labelStyle=dict(display='inline-block', fontSize='1.3em', paddingRight='16px'),
-                        #         inputStyle=dict(height=13, width=13),
-                        #         style=dict(width='90%', textAlign='right', backgroundColor='rgba(0,0,0,0)')
-                        #         ),
                         html.H6('Select data view using the legends.', style=dict(marginTop='0px', width='100%', textAlign='right')),
                         dcc.Graph(id='country-rates',
                                                     config={'displayModeBar': False},
@@ -174,7 +148,7 @@ layout = html.Div(className= 'main-div',
             ),
             html.Div([
                 dcc.Loading(id="pie-loading", style=dict(backgroundColor='rgb(60,60,60)'),
-                            children=[dcc.Graph(id='country-pie',
+                            children=[dcc.Graph(id='country-pie', config={'displayModeBar': False},
                                                 figure=go.Figure(layout=dict(
                                                                     margin={'l':0,'r':0,'t':0,'b':10},
                                                                     font=dict(family="Courier New, monospace",
