@@ -82,12 +82,7 @@ Div {
   }
   .rc-slider-mark-text {
       color: rgb(232, 235, 236)
-
   }
   .rc-slider-handle:focus {
     border-color: rgb(134, 4, 167);
   }
-/* 
-  #country-rates.dash-graph {
-      height: 100%;
-  } */
