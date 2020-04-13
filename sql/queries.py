@@ -6,6 +6,7 @@ This dashboard is for educational use.
 ----------------------------------------------------------------------------------------
 Module containing the SQL class which controls all queries to BigQuery.
 """
+import logging as log
 from google.cloud import bigquery
 from google.api_core.exceptions import BadRequest
 from datetime import datetime, timedelta
@@ -67,7 +68,8 @@ class SQL:
         Returns:
             dataframe -- overview of top 20 countries
         """
-        print("Making overview query")
+        log.info("Making overview query")
+        # print("Making overview query")
         overview = []
         sql = self.sql_overview.format(
             "%", date=self.last_column, ref=self._second_last_column()
@@ -75,7 +77,7 @@ class SQL:
         try:
             overview = self.client.query(sql).to_dataframe()
         except BadRequest:
-            print("Data unavailable")
+            log.warning("Data unavailable")
             return []
         return overview
 
@@ -90,7 +92,7 @@ class SQL:
         try:
             result = self.client.query(sql).to_dataframe()
         except BadRequest:
-            print("ERROR: Global Total Data Unavailable")
+            log.error("Global Total Data Unavailable")
             return []
         result = result.pivot(index="id", columns="dset", values="totals")
         active = pd.DataFrame()
@@ -115,9 +117,9 @@ class SQL:
         try:
             result = self.client.query(sql).to_dataframe()
         except BadRequest:
-            print("ERROR: Overview Data Unavailable")
+            log.error("Overview Data Unavailable")
             return []
-        print("Collected data for: {}".format(result["country"].values))
+        log.info("Collected data for: {}".format(result["country"].values))
         return result
 
     def country_data_query(self, country):
@@ -136,7 +138,7 @@ class SQL:
         try:
             results = self.client.query(sql).to_dataframe()
         except BadRequest:
-            print("Data unavailable")
+            log.warning("Data unavailable")
             return []
         results.set_index("dset", inplace=True)
         results.columns = pd.to_datetime(results.columns, format="_%m_%d_%y")

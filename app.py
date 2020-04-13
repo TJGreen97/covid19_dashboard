@@ -7,6 +7,7 @@ This dashboard is for educational use.
 Main module, including all callbacks and cached functions.
 """
 import os
+import logging as log
 from datetime import datetime
 from flask_caching import Cache
 
@@ -19,6 +20,8 @@ import pandas as pd
 from layout.layout import layout
 from sql.queries import SQL
 
+# log.getLogger().setLevel(log.INFO)
+log.basicConfig(filename='logs\\covid-dash.log', level=log.DEBUG)
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "config/my-covid-project.json"
 dset_order = ["confirmed_cases", "active_cases", "recovered_cases", "deaths"]
 bar_color = ["#7B4D80", "#3D8EDE", "#84CA72", "#D8555C"]
@@ -44,7 +47,8 @@ def get_overview_data():
     Returns:
         json -- dataframe of top 20 countries overview data, stored in json for cache.
     """
-    print("Getting overview data")
+    log.info("Getting overview data")
+    # print("Getting overview data")
     overview = sql.overview_query()
     return overview.to_json(orient="split")
 
@@ -56,7 +60,8 @@ def get_global_data():
     Returns:
         json -- dataframe of summarised global data
     """
-    print("Getting global data")
+    log.info("Getting global data")
+    # print("Getting global data")
     global_data = sql.global_total()
     return global_data.to_json(orient="split")
 
@@ -71,7 +76,8 @@ def get_country_overview(country):
     Returns:
         json -- dataframe of summarised data
     """
-    print("Getting {} overview data".format(country))
+    log.info("Getting {} overview data".format(country))
+    # print("Getting {} overview data".format(country))
     country_overview = sql.country_overview(country)
     return country_overview.to_json(orient="split")
 
@@ -86,7 +92,8 @@ def get_country_data(country):
     Returns:
         json -- dataframe of country data
     """
-    print("Getting {} data".format(country))
+    log.info("Getting {} data".format(country))
+    # print("Getting {} data".format(country))
     country_data = sql.country_data_query(country)
     return country_data.to_json(orient="split")
 
@@ -274,10 +281,11 @@ def get_country_totals(country):
     """
     overview_data = pd.read_json(get_overview_data(), orient="split")
     if country not in overview_data["country"].values:
-        print("Fetching Data...")
+        log.info("Fetching {} totals.".format(country))
+        # print("Fetching Data...")
         result = pd.read_json(get_country_overview(country), orient="split")
         if result is None:
-            print("Data not found")
+            log.error("{} data not found".format(country))
             raise PreventUpdate
     else:
         result = overview_data.loc[overview_data["country"] == country]
