@@ -1,3 +1,12 @@
+"""
+COVID19 Dashboard by Torran Green
+
+All data is queried from the Johns Hopkins University open dataset on Google's BigQuery.
+This dashboard is for educational use.
+----------------------------------------------------------------------------------------
+Layout module, describing the dashboard layout. The '.\assets\' directory contains CSS
+scripts for further style control.
+"""
 import dash_core_components as dcc
 import dash_html_components as html
 import plotly.graph_objects as go

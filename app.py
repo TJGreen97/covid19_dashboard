@@ -1,3 +1,11 @@
+"""
+COVID19 Dashboard by Torran Green
+
+All data is queried from the Johns Hopkins University open dataset on Google's BigQuery.
+This dashboard is for educational use.
+----------------------------------------------------------------------------------------
+Main module, including all callbacks and cached functions.
+"""
 import os
 from datetime import datetime
 from flask_caching import Cache
