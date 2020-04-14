@@ -53,7 +53,7 @@ layout = html.Div(
             [
                 html.H2(
                     id="overview-heading",
-                    children="Overview Data",
+                    children="Overview Data (stacked bars)",
                     style=dict(marginTop="0px", textAlign="center"),
                 ),
                 dcc.Graph(
@@ -65,10 +65,11 @@ layout = html.Div(
                             legend_title="Select Data to View:",
                             legend=dict(x=0.01, y=1),
                             showlegend=True,
+                            hovermode='x',
                             paper_bgcolor="rgb(45, 45, 45)",
                             plot_bgcolor="rgba(0,0,0,0)",
                             xaxis_title="Country",
-                            yaxis_title="Number of Cases",
+                            yaxis_title="Total Cases",
                             margin={"t": 0},
                             # dragmode=False,
                             font=dict(
@@ -278,7 +279,7 @@ layout = html.Div(
                                                     yaxis_title="New Cases",
                                                     legend_title="Select Data to View:",
                                                     title=dict(
-                                                        text="Daily New Cases",
+                                                        text="Daily New Cases (overlaid bars)",
                                                         xanchor="center",
                                                         x=0.5,
                                                         yref="container",

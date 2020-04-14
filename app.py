@@ -137,7 +137,7 @@ def update_bar(limit, fig):
                 y=data[category],
                 name=category,
                 hovertext="Click for more information.",
-                hoverinfo="text+y+name",
+                hoverinfo="y+name",
             )
         )
     return fig
@@ -229,6 +229,8 @@ def update_country(_, clickData, country, stats_fig, total_fig, rates_fig, pie_f
     else:
         selected_country = "US"
     selected_country = selected_country.strip().replace(' ', '_').replace('-', '_').replace("'", '_').replace('*', '').lower()
+    if selected_country == 'korea,_south':
+        selected_country = 'south_korea',
     country_display = selected_country.title()
     if country_display == "Us":
         country_display = "US"
