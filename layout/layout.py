@@ -277,8 +277,10 @@ layout = html.Div(
                                                         yref="container",
                                                     ),
                                                     legend=dict(
-                                                        x=0,
-                                                        y=1.05),
+                                                        x=1,
+                                                        y=1.2, 
+                                                        xanchor='center'),
+                                                    legend_orientation='h',
                                                     margin={
                                                         "l": 0,
                                                         "r": 0,
