@@ -8,19 +8,23 @@ Module containing the SQL class which controls all queries to BigQuery.
 """
 import logging as log
 from google.cloud import bigquery
+import pandas_gbq
 from google.api_core.exceptions import BadRequest
 from datetime import datetime, timedelta
 import platform
 import pandas as pd
+from utils.bq_setup import BQ
 
 
-class SQL:
+class SQL(BQ):
     def __init__(self):
         """Handles all queries to Google's BigQuery.
         """
+        self.dsets = ['confirmed_cases', 'recovered_cases', 'deaths']
         self.client = bigquery.Client()
         self.sql_overview = open("sql/sql_overview.txt", "r").read()
         self.last_column = self._get_last_db_column()
+        self.update_bq(self.last_column)
 
     @staticmethod
     def _get_time_format():
@@ -71,7 +75,6 @@ class SQL:
             dataframe -- overview of top 20 countries
         """
         log.info("Making overview query")
-        # print("Making overview query")
         overview = []
         sql = self.sql_overview.format(
             "%", date=self.last_column, ref=self._second_last_column()
@@ -161,3 +164,15 @@ class SQL:
         datetime_list = pd.date_range(start="2020-01-22", end=last_date).tolist()
         datelist = [date.strftime(self._get_time_format()) for date in datetime_list]
         return datelist
+
+    def country_query(self, country):
+        sql = open("sql/sql_country.txt", "r").read()
+        sql = sql.format(country=country.lower())
+        try:
+            results = self.client.query(sql).to_dataframe()
+        except BadRequest:
+            log.warning("Data unavailable")
+            return []
+        results['date'] = pd.to_datetime(results['date'], format="_%m_%d_%y")
+        results.set_index("date", inplace=True)
+        return results

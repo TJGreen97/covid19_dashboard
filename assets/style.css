@@ -45,7 +45,13 @@ Div {
     background-color: rgb(45, 45, 45);
 }
 
-.cases-line-div {
+.cases-line-div { 
+    /* width: 60%; */
+    background-color: rgb(60, 60, 60);
+    margin: 20px;
+    padding: 20px;
+}
+.cases-line-div2 {
     width: 60%;
     background-color: rgb(60, 60, 60);
     margin: 20px;
@@ -86,3 +92,15 @@ Div {
   .rc-slider-handle:focus {
     border-color: rgb(134, 4, 167);
   }
+
+  #country-pie .legend .traces .legendtoggle {
+    display: none;
+ }
+ /* just for presentation: shows the default cursor insted of the text cursor */
+ #country-pie .legend .traces .legendtext {
+    cursor: default;
+ }
+
+ /* #overview-graph .js-plotly-plot .plotly .cursor-pointer {
+    cursor: auto;
+} */

@@ -63,7 +63,7 @@ layout = html.Div(
                         layout=dict(
                             barmode="stack",
                             legend_title="Select Data to View:",
-                            legend=dict(x=0, y=1),
+                            legend=dict(x=0.01, y=1),
                             showlegend=True,
                             paper_bgcolor="rgb(45, 45, 45)",
                             plot_bgcolor="rgba(0,0,0,0)",
@@ -87,7 +87,9 @@ layout = html.Div(
                 ),
                 html.Div(
                     [
-                        html.H5(children="Number of Countries in View:"),
+                        html.H5(children="Number of Countries in View:",
+                                style=dict(marginLeft='60px')
+                                ),
                         html.Div(
                             [
                                 dcc.Slider(
@@ -175,6 +177,89 @@ layout = html.Div(
                     ),
                 ),
                 html.Div(
+                        [
+                            dcc.Loading(
+                                id="total-loading",
+                                style=dict(backgroundColor="rgb(60,60,60)"),
+                                children=[
+                                    dcc.Graph(
+                                        id="country-total",
+                                        style=dict(height="100%"),
+                                        config={"displayModeBar": False},
+                                        figure=go.Figure(
+                                            layout=dict(
+                                                xaxis_title="Date",
+                                                yaxis_title="Total Cases",
+                                                legend_title="Select Data to View:",
+                                                title=dict(
+                                                    text="Cumulative Number of Cases",
+                                                    xanchor="center",
+                                                    x=0.5,
+                                                    yref="container",
+                                                    yanchor="top",
+                                                    y=1,
+                                                ),
+                                                legend=dict(x=0.01, y=1),
+                                                showlegend=True,
+                                                margin={"t": 50, "b": 0},
+                                                paper_bgcolor="rgb(60, 60, 60)",
+                                                plot_bgcolor="rgb(60, 60, 60)",
+                                                dragmode="pan",
+                                                font=dict(
+                                                    family="Courier New, monospace",
+                                                    size=18,
+                                                    color="rgb(228, 241, 250)",
+                                                ),
+                                                yaxis=dict(
+                                                    gridcolor="rgb(121, 117, 117)",
+                                                    fixedrange=True,
+                                                ),
+                                                xaxis=dict(
+                                                    gridcolor="rgb(121, 117, 117)",
+                                                    tickformat="%d/%m/%y",
+                                                    tickangle=45,
+                                                    type="date",
+                                                    rangeselector=dict(
+                                                        buttons=list(
+                                                            [
+                                                                dict(
+                                                                    count=7,
+                                                                    label="1w",
+                                                                    step="day",
+                                                                    stepmode="backward",
+                                                                ),
+                                                                dict(
+                                                                    count=1,
+                                                                    label="1m",
+                                                                    step="month",
+                                                                    stepmode="backward",
+                                                                ),
+                                                                dict(
+                                                                    count=3,
+                                                                    label="3m",
+                                                                    step="month",
+                                                                    stepmode="backward",
+                                                                ),
+                                                                dict(step="all"),
+                                                            ]
+                                                        ),
+                                                        bgcolor="rgb(55,55,55)",
+                                                        activecolor="rgb(95, 95, 95)",
+                                                        x=1,
+                                                        y=1,
+                                                        xanchor="right",
+                                                    ),
+                                                ),
+                                            )
+                                        ),
+                                    )
+                                ],
+                                type="dot",
+                            )
+                        ],
+                        className="cases-line-div",
+                        ),
+                html.Div(
                     [
                         html.Div(
                             [
@@ -188,19 +273,21 @@ layout = html.Div(
                                             config={"displayModeBar": False},
                                             figure=go.Figure(
                                                 layout=dict(
+                                                    barmode="overlay",
                                                     xaxis_title="Date",
-                                                    yaxis_title="Number of Cases",
+                                                    yaxis_title="New Cases",
                                                     legend_title="Select Data to View:",
                                                     title=dict(
-                                                        text="Cumulative Number of Cases",
+                                                        text="Daily New Cases",
                                                         xanchor="center",
                                                         x=0.5,
                                                         yref="container",
-                                                        y=0,
+                                                        yanchor='top',
+                                                        y=1,
                                                     ),
-                                                    legend=dict(x=0, y=1),
+                                                    legend=dict(x=0.01, y=1),
                                                     showlegend=True,
-                                                    margin={"t": 0, "b": 150},
+                                                    margin={"t": 50, "b": 0},
                                                     paper_bgcolor="rgb(60, 60, 60)",
                                                     plot_bgcolor="rgb(60, 60, 60)",
                                                     dragmode="pan",
@@ -256,7 +343,7 @@ layout = html.Div(
                                     type="dot",
                                 )
                             ],
-                            className="cases-line-div",
+                            className="cases-line-div2",
                         ),
                         html.Div(
                             [
@@ -273,19 +360,20 @@ layout = html.Div(
                                                         text="Current Distribution of Cases",
                                                         xanchor="center",
                                                         x=0.5,
-                                                        y=0,
+                                                        y=1,
                                                         yref="container",
+                                                        yanchor="top"
                                                     ),
                                                     legend=dict(
-                                                        x=1,
-                                                        y=1.2, 
+                                                        x=0.5,
+                                                        y=0,
                                                         xanchor='center'),
                                                     legend_orientation='h',
                                                     margin={
                                                         "l": 0,
                                                         "r": 0,
-                                                        "t": 0,
-                                                        "b": 30,
+                                                        "t": 50,
+                                                        "b": 0,
                                                     },
                                                     font=dict(
                                                         family="Courier New, monospace",

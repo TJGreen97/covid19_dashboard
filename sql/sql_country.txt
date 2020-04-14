@@ -1,0 +1,11 @@
+select confirmed.date,
+	confirmed.{country} as confirmed_cases,
+	recovered.{country} as recovered_cases,
+	death.{country} as deaths,
+	(confirmed.{country} - recovered.{country} - death.{country}) as active_cases
+from torran_covid_dset.confirmed_cases as confirmed
+join torran_covid_dset.recovered_cases as recovered
+on confirmed.index = recovered.index
+join torran_covid_dset.deaths as death
+on confirmed.index = death.index
+order by confirmed.index
