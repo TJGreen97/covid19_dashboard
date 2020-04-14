@@ -41,7 +41,6 @@ class SQL:
         """
         date_attempt = (datetime.now()).strftime(self._get_time_format())
         sql = open("sql/test_query.txt", "r").read()
-        log.debug("Test query: {}".format(sql))
         n = 0
         while n < 5:
             log.debug("Date attempt: {}".format(date_attempt))
@@ -92,17 +91,21 @@ class SQL:
         """
         sql = open("sql/global_total.txt", "r").read()
         sql = sql.format(date=self.last_column, ref=self._second_last_column())
+        log.debug("SQL: {}".format(sql))
         try:
             result = self.client.query(sql).to_dataframe()
         except BadRequest:
             log.error("Global Total Data Unavailable")
             return []
+        log.debug("Global total result: {}".format(result))
         result = result.pivot(index="id", columns="dset", values="totals")
+        log.debug("Global total result pivotted: {}".format(result))
         active = pd.DataFrame()
         active["active_cases"] = (
             result["confirmed_cases"] - result["deaths"] - result["recovered_cases"]
         )
         result = pd.concat([result, active], axis=1)
+        log.debug("Global total final result: {}".format(result))
         return result
 
     def country_overview(self, country):

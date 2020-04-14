@@ -163,10 +163,10 @@ def page_load(_, fig):
                 type="indicator",
                 mode="number+delta",
                 title=dict(text=dset, font={"color": "#83B7EA"}),
-                value=int(global_data.iloc[0][dset]),
+                value=int(global_data.iloc[1][dset]),
                 number=dict(font={"color": "#83B7EA"}),
                 delta={
-                    "reference": int(global_data.iloc[1][dset]),
+                    "reference": int(global_data.iloc[0][dset]),
                     "increasing": {"color": "rgb(228, 241, 250)"},
                     "decreasing": {"color": "rgb(228, 241, 250)"},
                 },
