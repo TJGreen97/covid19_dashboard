@@ -41,11 +41,14 @@ class SQL:
         """
         date_attempt = (datetime.now()).strftime(self._get_time_format())
         sql = open("sql/test_query.txt", "r").read()
+        log.debug("Test query: {}".format(sql))
         n = 0
         while n < 5:
+            log.debug("Date attempt: {}".format(date_attempt))
+            sql_attempt = sql.format(date_attempt)
+            log.debug("Formatted SQL Test: {}".format(sql_attempt))
             try:
-                sql = sql.format(date_attempt)
-                self.client.query(sql).to_dataframe()
+                self.client.query(sql_attempt).to_dataframe()
                 break
             except BadRequest:
                 date_attempt = (
