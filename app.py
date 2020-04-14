@@ -228,12 +228,14 @@ def update_country(_, clickData, country, stats_fig, total_fig, rates_fig, pie_f
         selected_country = clickData["points"][0]["label"]
     else:
         selected_country = "US"
-    selected_country = selected_country.strip().replace(' ', '_').replace('-', '_').replace("'", '_').replace('*', '').lower()
-    if selected_country == 'korea,_south':
-        selected_country = 'south_korea',
+
+    if selected_country == 'Korea, South':
+        selected_country = "south korea"
     country_display = selected_country.title()
     if country_display == "Us":
         country_display = "US"
+
+    selected_country = selected_country.strip().replace(' ', '_').replace('-', '_').replace("'", '_').replace('*', '').lower()
     data = pd.read_json(get_country_data(selected_country), orient="split")
     return (
         country_display,

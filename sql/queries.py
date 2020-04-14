@@ -111,59 +111,59 @@ class SQL(BQ):
         log.debug("Global total final result: {}".format(result))
         return result
 
-    def country_overview(self, country):
-        """Queries a summarised overview of a selected country.
+    # def country_overview(self, country):
+    #     """Queries a summarised overview of a selected country.
 
-        Arguments:
-            country {string} -- required country
+    #     Arguments:
+    #         country {string} -- required country
 
-        Returns:
-            dataframe -- dataframe of country overview
-        """
-        sql = self.sql_overview.format(
-            country.upper(), date=self.last_column, ref=self._second_last_column()
-        )
-        try:
-            result = self.client.query(sql).to_dataframe()
-        except BadRequest:
-            log.error("Overview Data Unavailable")
-            return []
-        log.info("Collected data for: {}".format(result["country"].values))
-        return result
+    #     Returns:
+    #         dataframe -- dataframe of country overview
+    #     """
+    #     sql = self.sql_overview.format(
+    #         country.upper(), date=self.last_column, ref=self._second_last_column()
+    #     )
+    #     try:
+    #         result = self.client.query(sql).to_dataframe()
+    #     except BadRequest:
+    #         log.error("Overview Data Unavailable")
+    #         return []
+    #     log.info("Collected data for: {}".format(result["country"].values))
+    #     return result
 
-    def country_data_query(self, country):
-        """Queries all cases data for required country
+    # def country_data_query(self, country):
+    #     """Queries all cases data for required country
 
-        Arguments:
-            country {string} -- required country
+    #     Arguments:
+    #         country {string} -- required country
 
-        Returns:
-            dataframe -- dataframe of country data
-        """
-        date_list = self._get_date_list()
-        date_string = ", ".join(["SUM(" + x + ") AS " + x for x in date_list])
-        sql = open("sql/country_data.txt", "r").read()
-        sql = sql.format(date_list=date_string, country=country.upper())
-        try:
-            results = self.client.query(sql).to_dataframe()
-        except BadRequest:
-            log.warning("Data unavailable")
-            return []
-        results.set_index("dset", inplace=True)
-        results.columns = pd.to_datetime(results.columns, format="_%m_%d_%y")
-        return results
+    #     Returns:
+    #         dataframe -- dataframe of country data
+    #     """
+    #     date_list = self._get_date_list()
+    #     date_string = ", ".join(["SUM(" + x + ") AS " + x for x in date_list])
+    #     sql = open("sql/country_data.txt", "r").read()
+    #     sql = sql.format(date_list=date_string, country=country.upper())
+    #     try:
+    #         results = self.client.query(sql).to_dataframe()
+    #     except BadRequest:
+    #         log.warning("Data unavailable")
+    #         return []
+    #     results.set_index("dset", inplace=True)
+    #     results.columns = pd.to_datetime(results.columns, format="_%m_%d_%y")
+    #     return results
 
-    def _get_date_list(self):
-        """Produces a correctly formatted list of all dates included in dataset;
-        using known start date.
+    # def _get_date_list(self):
+    #     """Produces a correctly formatted list of all dates included in dataset;
+    #     using known start date.
 
-        Returns:
-            list -- list of strings of dates
-        """
-        last_date = datetime.strptime(self.last_column, "_%m_%d_%y")
-        datetime_list = pd.date_range(start="2020-01-22", end=last_date).tolist()
-        datelist = [date.strftime(self._get_time_format()) for date in datetime_list]
-        return datelist
+    #     Returns:
+    #         list -- list of strings of dates
+    #     """
+    #     last_date = datetime.strptime(self.last_column, "_%m_%d_%y")
+    #     datetime_list = pd.date_range(start="2020-01-22", end=last_date).tolist()
+    #     datelist = [date.strftime(self._get_time_format()) for date in datetime_list]
+    #     return datelist
 
     def country_query(self, country):
         sql = open("sql/sql_country.txt", "r").read()
