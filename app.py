@@ -195,7 +195,10 @@ def page_load(_, fig):
         Output("country-rates", "figure"),
         Output("country-pie", "figure"),
     ],
-    [Input("select-country", "n_clicks"), Input("overview-graph", "clickData")],
+    [
+        Input("select-country", "n_clicks"),
+        Input("choose-country", "n_submit"),
+        Input("overview-graph", "clickData")],
     [
         State("choose-country", "value"),
         State("country-stats", "figure"),
@@ -204,7 +207,7 @@ def page_load(_, fig):
         State("country-pie", "figure")
     ],
 )
-def update_country(_, clickData, country, stats_fig, total_fig, rates_fig, pie_fig):
+def update_country(_, _2, clickData, country, stats_fig, total_fig, rates_fig, pie_fig):
     """Callback to update the country displayed in the country view.
 
     Arguments:
@@ -219,7 +222,8 @@ def update_country(_, clickData, country, stats_fig, total_fig, rates_fig, pie_f
         tuple -- necessary updates for new country, calls functions to update figures
     """
     ctx = dash.callback_context
-    if ctx.triggered[0]["prop_id"].split(".")[0] == "select-country" and country != "":
+    trigger = ctx.triggered[0]["prop_id"].split(".")[0]
+    if (trigger == "select-country" or trigger == "choose-country") and country != "":
         if country.title() == "Uk":
             selected_country = "United Kingdom"
         else:

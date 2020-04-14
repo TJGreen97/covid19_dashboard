@@ -128,7 +128,7 @@ layout = html.Div(
                         html.Div(
                             [
                                 html.H4(
-                                    children="Select Country:", style=dict(width="50%")
+                                    children="Search for Country:", style=dict(width="50%")
                                 ),
                                 dcc.Input(
                                     id="choose-country",

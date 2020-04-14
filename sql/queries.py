@@ -172,7 +172,7 @@ class SQL(BQ):
             results = self.client.query(sql).to_dataframe()
         except BadRequest:
             log.warning("Data unavailable")
-            return []
+            return pd.DataFrame()
         results['date'] = pd.to_datetime(results['date'], format="_%m_%d_%y")
         results.set_index("date", inplace=True)
         return results
