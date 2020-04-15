@@ -241,6 +241,7 @@ def update_country(_, _2, clickData, country, stats_fig, total_fig, rates_fig, p
 
     selected_country = selected_country.strip().replace(' ', '_').replace('-', '_').replace("'", '_').replace('*', '').lower()
     data = pd.read_json(get_country_data(selected_country), orient="split")
+    # print(data)
     return (
         country_display,
         country_display,

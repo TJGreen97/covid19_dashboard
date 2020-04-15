@@ -21,20 +21,20 @@ class BQ:
         return
 
     def update_bq(self, last_column):
-        index_date = pandas_gbq.read_gbq("""SELECT index, date
-                                        FROM torran_covid_dset.deaths
-                                        ORDER BY index DESC
-                                        limit 1""")
-        # print(index_date.loc[0, 'date'])
-        # print(last_column)
         public_date = datetime.strptime(last_column, "_%m_%d_%y")
-        private_date = datetime.strptime(index_date['date'].iloc[0], "_%m_%d_%y")
-        if private_date >= public_date:
-            print("Up to date")
-            return
-        
         for dset in self.dsets:
-            # print(dset)
+            
+            index_date = pandas_gbq.read_gbq("""SELECT index, date
+                                        FROM torran_covid_dset.{}
+                                        ORDER BY index DESC
+                                        limit 1""".format(dset))
+            # print(index_date.loc[0, 'date'])
+            # print(last_column)
+            private_date = datetime.strptime(index_date['date'].iloc[0], "_%m_%d_%y")
+            if private_date >= public_date:
+                print("{} Up to date".format(dset))
+                continue
+        
             new_confirmed = pandas_gbq.read_gbq("""
                                                 SELECT country_region, SUM({date}) as {date}
                                                 FROM `bigquery-public-data.covid19_jhu_csse_eu.{dset}`

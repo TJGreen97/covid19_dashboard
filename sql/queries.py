@@ -175,4 +175,5 @@ class SQL(BQ):
             return pd.DataFrame()
         results['date'] = pd.to_datetime(results['date'], format="_%m_%d_%y")
         results.set_index("date", inplace=True)
+        results.drop_duplicates(inplace=True)
         return results
