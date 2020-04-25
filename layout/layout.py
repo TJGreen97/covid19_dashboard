@@ -21,9 +21,10 @@ layout = html.Div(
                     [
                         html.H1(id="title", children="COVID19 Dashboard"),
                         html.Div(
-                            children="""
-                Created by Torran Green, using the Johns Hopkins University dataset.
-            """
+                            children=["Created by ",
+                                    html.A("Torran Green", href='https://torrangreen.com', target="_blank"), 
+                                    " using the Johns Hopkins University ",
+                                    html.A("dataset", href='https://console.cloud.google.com/marketplace/details/johnshopkins/covid19_jhu_global_cases', target="_blank")]
                         ),
                     ],
                     style=dict(marginLeft="20px", width="40%", padding="20px"),

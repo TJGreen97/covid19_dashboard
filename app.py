@@ -71,37 +71,6 @@ def get_country_data(country):
     country_data = sql.country_query(country)
     return country_data.to_json(orient="split")
 
-# @cache.memoize()
-# def get_country_overview(country):
-#     """Cached function to retrieve summarised data for a specific country.
-
-#     Arguments:
-#         country {string}
-
-#     Returns:
-#         json -- dataframe of summarised data
-#     """
-#     log.info("Getting {} overview data".format(country))
-#     # print("Getting {} overview data".format(country))
-#     country_overview = sql.country_overview(country)
-#     return country_overview.to_json(orient="split")
-
-
-# @cache.memoize()
-# def get_country_data(country):
-#     """Cached function to retrieve all data on a specific country.
-
-#     Arguments:
-#         country {string}
-
-#     Returns:
-#         json -- dataframe of country data
-#     """
-#     log.info("Getting {} data".format(country))
-#     # print("Getting {} data".format(country))
-#     country_data = sql.country_data_query(country)
-#     return country_data.to_json(orient="split")
-
 
 @app.callback(
     Output("overview-graph", "figure"),
@@ -284,31 +253,6 @@ def update_pie(data, fig):
     return fig
 
 
-# def get_country_totals(country):
-#     """Retrieves overviews of desired country by checking cached functions.
-
-#     Arguments:
-#         country {string} -- required country
-
-#     Raises:
-#         PreventUpdate: prevents figure updates if data retrieval fails
-
-#     Returns:
-#         dataframe -- dataframe of overview data of required country
-#     """
-#     overview_data = pd.read_json(get_overview_data(), orient="split")
-#     if country not in overview_data["country"].values:
-#         log.info("Fetching {} totals.".format(country))
-#         # print("Fetching Data...")
-#         result = pd.read_json(get_country_overview(country), orient="split")
-#         if result is None:
-#             log.error("{} data not found".format(country))
-#             raise PreventUpdate
-#     else:
-#         result = overview_data.loc[overview_data["country"] == country]
-#     return result
-
-
 def update_line(data, fig):
     """Updates cummulative line graph.
 
@@ -369,8 +313,8 @@ def update_country_stats(data, fig):
 
 def update_rates_bar(data, fig):
     fig["data"] = []
-
-    for dset in dset_order:
+    dsets = [dset for dset in dset_order if dset != 'active_cases']
+    for dset in dsets:
         y = data[dset].diff()
         y = y[y != 0]
         y.dropna(inplace=True)
