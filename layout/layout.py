@@ -21,10 +21,10 @@ layout = html.Div(
                     [
                         html.H1(id="title", children="COVID19 Dashboard"),
                         html.Div(
-                            children=["Created by ",
-                                    html.A("Torran Green", href='https://torrangreen.com', target="_blank"), 
-                                    " using the Johns Hopkins University ",
-                                    html.A("dataset", href='https://console.cloud.google.com/marketplace/details/johnshopkins/covid19_jhu_global_cases', target="_blank")]
+                            children=[  "Created by ",
+                                        html.A("Torran Green", href='https://torrangreen.com', target="_blank"), 
+                                        " using the Johns Hopkins University ",
+                                        html.A("dataset", href='https://console.cloud.google.com/marketplace/details/johnshopkins/covid19_jhu_global_cases', target="_blank")]
                         ),
                     ],
                     style=dict(marginLeft="20px", width="40%", padding="20px"),
@@ -269,6 +269,7 @@ layout = html.Div(
                                     id="rates-loading",
                                     style=dict(backgroundColor="rgb(60,60,60)"),
                                     children=[
+                                        html.H4("Daily New Cases (overlaid bars)"),
                                         dcc.Graph(
                                             id="country-rates",
                                             style=dict(height="100%"),
@@ -279,17 +280,9 @@ layout = html.Div(
                                                     xaxis_title="Date",
                                                     yaxis_title="New Cases",
                                                     legend_title="Select Data to View:",
-                                                    title=dict(
-                                                        text="Daily New Cases (overlaid bars)",
-                                                        xanchor="center",
-                                                        x=0.5,
-                                                        yref="container",
-                                                        yanchor='top',
-                                                        y=1,
-                                                    ),
                                                     legend=dict(x=0.01, y=1),
                                                     showlegend=True,
-                                                    margin={"t": 50, "b": 0},
+                                                    margin={"t": 5, "b": 0},
                                                     paper_bgcolor="rgb(60, 60, 60)",
                                                     plot_bgcolor="rgb(60, 60, 60)",
                                                     dragmode="pan",
@@ -353,19 +346,12 @@ layout = html.Div(
                                     id="pie-loading",
                                     style=dict(backgroundColor="rgb(60,60,60)"),
                                     children=[
+                                        html.H4("Current Distribution of Cases"),
                                         dcc.Graph(
                                             id="country-pie",
                                             config={"displayModeBar": False},
                                             figure=go.Figure(
                                                 layout=dict(
-                                                    title=dict(
-                                                        text="Current Distribution of Cases",
-                                                        xanchor="center",
-                                                        x=0.5,
-                                                        y=1,
-                                                        yref="container",
-                                                        yanchor="top"
-                                                    ),
                                                     legend=dict(
                                                         x=0.5,
                                                         y=0,
@@ -374,8 +360,8 @@ layout = html.Div(
                                                     margin={
                                                         "l": 0,
                                                         "r": 0,
-                                                        "t": 50,
-                                                        "b": 0,
+                                                        "t": 5,
+                                                        "b": 5,
                                                     },
                                                     font=dict(
                                                         family="Courier New, monospace",

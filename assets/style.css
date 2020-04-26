@@ -64,6 +64,10 @@ Div {
     margin: 20px;
     padding: 20px;
 }
+.infolayer.g-gtitle.gtitle {
+    font-size: 10px;
+}
+
 /* 
 .rc-slider{
     width: 500%;
