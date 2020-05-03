@@ -46,7 +46,7 @@ class SQL(BQ):
         date_attempt = (datetime.now()).strftime(self._get_time_format())
         sql = open("sql/test_query.txt", "r").read()
         # n = 0
-        while:
+        while True:
             log.debug("Date attempt: {}".format(date_attempt))
             sql_attempt = sql.format(date_attempt)
             log.debug("Formatted SQL Test: {}".format(sql_attempt))
