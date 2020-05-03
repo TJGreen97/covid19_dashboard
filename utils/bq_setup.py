@@ -1,4 +1,5 @@
 import pandas_gbq
+import pandas as pd
 import os
 from datetime import datetime
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "config/my-covid-project.json"
@@ -16,7 +17,7 @@ class BQ:
             df.drop(['province_state', 'latitude', 'longitude', 'location_geom'], axis=1, inplace=True)
             df = df.groupby(['country_region']).sum().T
             df = self.clean_data(df)
-            df.drop(df.tail(1).index, inplace=True)
+            # df.drop(df.tail(1).index, inplace=True)
             pandas_gbq.to_gbq(df, 'torran_covid_dset.{}'.format(dset), if_exists='replace')
         return
 
@@ -62,8 +63,20 @@ class BQ:
         df.reset_index(inplace=True)
         return df
 
+    def github_dataset(self):
+        url = "https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_{}_global.csv"
+        for dset in self.dsets:
+            git_dset = dset.split("_")[0]
+            df = pd.read_csv(url.format(git_dset))
+            df.columns = df.columns.str.replace("/", "_")
+            df.columns = df.columns.str.lower()
+            df.columns = [("_" + col) if col[0].isnumeric() else col for col in df.columns]
+            pandas_gbq.to_gbq(df, 'jhu_covid_dset.{}'.format(dset), if_exists='replace')
+        return
+
 
 if __name__ == '__main__':
     bq = BQ()
-    bq.create_bq()
+    # bq.create_bq()
     # bq.update_bq('_4_13_20')
+    bq.github_dataset()
