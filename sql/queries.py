@@ -45,8 +45,8 @@ class SQL(BQ):
         """
         date_attempt = (datetime.now()).strftime(self._get_time_format())
         sql = open("sql/test_query.txt", "r").read()
-        n = 0
-        while n < 5:
+        # n = 0
+        while:
             log.debug("Date attempt: {}".format(date_attempt))
             sql_attempt = sql.format(date_attempt)
             log.debug("Formatted SQL Test: {}".format(sql_attempt))
@@ -57,7 +57,7 @@ class SQL(BQ):
                 date_attempt = (
                     datetime.strptime(date_attempt, "_%m_%d_%y") - timedelta(1)
                 ).strftime(self._get_time_format())
-            n += 1
+            # n += 1
         # TO DO: raise an error
         return date_attempt
 
