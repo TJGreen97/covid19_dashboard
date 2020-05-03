@@ -1,1 +1,1 @@
-SELECT {} FROM `bigquery-public-data.covid19_jhu_csse_eu.confirmed_cases`
+SELECT {} FROM jhu_covid_dset.confirmed_cases

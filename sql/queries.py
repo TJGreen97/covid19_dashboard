@@ -24,7 +24,7 @@ class SQL(BQ):
         self.client = bigquery.Client()
         self.sql_overview = open("sql/sql_overview.txt", "r").read()
         self.last_column = self._get_last_db_column()
-        self.update_bq(self.last_column)
+        # self.update_bq(self.last_column)
 
     @staticmethod
     def _get_time_format():

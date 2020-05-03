@@ -1,27 +1,27 @@
 SELECT SUM({date}) AS totals, 'deaths' AS dset, '{date}' AS id
-FROM `bigquery-public-data.covid19_jhu_csse_eu.deaths` AS deaths
+FROM jhu_covid_dset.deaths AS deaths
                 
 UNION ALL
                 
 SELECT SUM({date}), 'confirmed_cases', '{date}'
-FROM `bigquery-public-data.covid19_jhu_csse_eu.confirmed_cases` AS confirmed_cases
+FROM jhu_covid_dset.confirmed_cases AS confirmed_cases
                 
 UNION ALL
                 
 SELECT SUM({date}), 'recovered_cases', '{date}'
-FROM `bigquery-public-data.covid19_jhu_csse_eu.recovered_cases` AS recovered_cases
+FROM jhu_covid_dset.recovered_cases AS recovered_cases
                 
 UNION ALL
                 
 SELECT SUM({ref}), 'deaths' AS dset, '{ref}' AS id
-FROM `bigquery-public-data.covid19_jhu_csse_eu.deaths` AS deaths
+FROM jhu_covid_dset.deaths AS deaths
                 
 UNION ALL
                 
 SELECT SUM({ref}), 'confirmed_cases', '{ref}'
-FROM `bigquery-public-data.covid19_jhu_csse_eu.confirmed_cases` AS confirmed_cases
+FROM jhu_covid_dset.confirmed_cases AS confirmed_cases
                 
 UNION ALL
       
 SELECT SUM({ref}), 'recovered_cases', '{ref}'
-FROM `bigquery-public-data.covid19_jhu_csse_eu.recovered_cases` AS recovered_cases
+FROM jhu_covid_dset.recovered_cases AS recovered_cases

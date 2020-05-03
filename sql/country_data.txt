@@ -1,12 +1,12 @@
-SELECT {date_list}, 'confirmed_cases' dset FROM `bigquery-public-data.covid19_jhu_csse_eu.confirmed_cases`
+SELECT {date_list}, 'confirmed_cases' dset FROM jhu_covid_dset.confirmed_cases
 WHERE UPPER(country_region) = '{country}'
             
 UNION ALL
 
-SELECT {date_list}, 'recovered_cases' FROM `bigquery-public-data.covid19_jhu_csse_eu.recovered_cases`
+SELECT {date_list}, 'recovered_cases' FROM jhu_covid_dset.recovered_cases
 WHERE UPPER(country_region) = '{country}'
             
 UNION ALL
 
-SELECT {date_list}, 'deaths' FROM `bigquery-public-data.covid19_jhu_csse_eu.deaths`
+SELECT {date_list}, 'deaths' FROM jhu_covid_dset.deaths
 WHERE UPPER(country_region) = '{country}'

@@ -7,12 +7,12 @@ SELECT  UPPER(confirmed.country_region) AS country,
         (SUM(confirmed.{ref}) - SUM(recovered.{ref}) - SUM(deaths.{ref})) AS ref_active_cases,
         SUM(recovered.{ref}) AS ref_recovered_cases,
         SUM(deaths.{ref}) AS ref_deaths
-FROM `bigquery-public-data.covid19_jhu_csse_eu.confirmed_cases` AS confirmed
-INNER JOIN `bigquery-public-data.covid19_jhu_csse_eu.recovered_cases` AS recovered
+FROM jhu_covid_dset.confirmed_cases AS confirmed
+INNER JOIN jhu_covid_dset.recovered_cases AS recovered
 ON  (confirmed.province_state = recovered.province_state
         OR (confirmed.province_state is NULL AND recovered.province_state is NULL))
         AND confirmed.country_region = recovered.country_region
-INNER JOIN `bigquery-public-data.covid19_jhu_csse_eu.deaths` AS deaths
+INNER JOIN jhu_covid_dset.deaths AS deaths
 ON  (confirmed.province_state = deaths.province_state
         OR (confirmed.province_state is NULL AND deaths.province_state is NULL))
         AND confirmed.country_region = deaths.country_region
