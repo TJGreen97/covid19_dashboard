@@ -19,9 +19,8 @@ import pandas as pd
 from utils.db_interface import PostgresQueries as PQ
 from layout.layout import layout
 
-# log.getLogger().setLevel(log.INFO)
+log.getLogger().setLevel(log.INFO)
 log.basicConfig(filename='logs\\covid-dash.log', level=log.DEBUG)
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "config/my-covid-project.json"
 dset_order = ["confirmed_cases", "active_cases", "recovered_cases", "deaths"]
 bar_color = ["#7B4D80", "#3D8EDE", "#84CA72", "#D8555C"]
 color_select = dict(zip(dset_order, bar_color))

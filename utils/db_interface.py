@@ -6,23 +6,30 @@ from sqlalchemy import create_engine
 
 
 class PostgresDB:
-    def __init__(self, dsets=['confirmed_cases', 'recovered_cases', 'deaths']):
-        self.DATABASE_URL = os.environ['DATABASE_URL']
-        # self.DATABASE_URL = "postgres://aupleyoffwsamv:3dd3df5cfa3dbdf524eae4dc1476e1041b61844bbe399e2652d30775225228ac@ec2-54-217-204-34.eu-west-1.compute.amazonaws.com:5432/da8kr727vlcqa4"
+    def __init__(self, dsets=["confirmed_cases", "recovered_cases", "deaths"]):
+        self.DATABASE_URL = os.environ["DATABASE_URL"]
         self.engine = create_engine(self.DATABASE_URL)
         self.dsets = dsets
 
-    def create_tables(self, url="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_{}_global.csv"):
+    def create_tables(
+        self,
+        url="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_{}_global.csv",
+    ):
+        """Creates the tables within the Postgres DB. Heroku is scheduled to call this function at 3am every day.
+
+        Keyword Arguments:
+            url {str} -- source of raw data
+        """
         for dset in self.dsets:
-            print("Dataset: {}".format(dset))
+            log.info("Dataset: {}".format(dset))
             git_dset = dset.split("_")[0]
-            print("Reading Dataset.")
+            log.info("Reading Dataset.")
             df = pd.read_csv(url.format(git_dset))
-            print("Dataset Read, Formatting...")
+            log.info("Dataset Read, Formatting...")
             (df, transposed_df) = self.format_df(df)
-            print("Writing {} Table".format(dset))
+            log.info("Writing {} Table".format(dset))
             df.to_sql(dset, self.engine, if_exists="replace")
-            print("Writing {}_T Table".format(dset))
+            log.info("Writing {}_T Table".format(dset))
             transposed_df.to_sql("{}_T".format(dset), self.engine, if_exists="replace")
 
     def format_df(self, df):
@@ -30,22 +37,33 @@ class PostgresDB:
         df.columns = df.columns.str.lower()
         df.columns = [("_" + col) if col[0].isnumeric() else col for col in df.columns]
         transposed_df = df.copy()
-        transposed_df.drop(['province_state', 'lat', 'long'], axis=1, inplace=True)
-        transposed_df = transposed_df.groupby(['country_region']).sum().T
+        transposed_df.drop(["province_state", "lat", "long"], axis=1, inplace=True)
+        transposed_df = transposed_df.groupby(["country_region"]).sum().T
         transposed_df = self.clean_data(transposed_df)
         return df, transposed_df
 
     @staticmethod
     def clean_data(df):
-        df.columns = [name.strip().replace(' ', '_').replace('-', '_').replace("'", '_').replace('*', '').lower() for name in df.columns]
-        df.rename(columns={
-            'congo_(brazzaville)': 'congo',
-            'congo_(kinshasa)': 'congo',
-            'korea,_south': 'south_korea',
-            }, inplace=True)
+        df.columns = [
+            name.strip()
+            .replace(" ", "_")
+            .replace("-", "_")
+            .replace("'", "_")
+            .replace("*", "")
+            .lower()
+            for name in df.columns
+        ]
+        df.rename(
+            columns={
+                "congo_(brazzaville)": "congo",
+                "congo_(kinshasa)": "congo",
+                "korea,_south": "south_korea",
+            },
+            inplace=True,
+        )
         df = df.groupby(df.columns, axis=1).sum()
         df.reset_index(inplace=True)
-        df.rename(columns={'index': 'date'}, inplace=True)
+        df.rename(columns={"index": "date"}, inplace=True)
         df.reset_index(inplace=True)
         return df
 
@@ -56,24 +74,36 @@ class PostgresQueries(PostgresDB):
         self.last_columns = self.find_last_columns()
 
     def find_last_columns(self):
+        """Determines the last columns added to the tables.
+
+        Returns:
+            Series -- two most recent dates.
+        """
         with open("sql/last_column_query.txt", "r") as file:
             sql = file.read()
         try:
             out = pd.read_sql_query(sql, self.engine)
-            return out['column_name']
+            return out["column_name"]
         except Exception:
-            print("Last column not found")
-            return ''
+            log.error("Last column not found")
+            return ""
 
     def overview_query(self):
-        with open("sql/sql_overview_query.txt", "r") as file:
+        """Query to retrieve the data of the 20 worst affected countries.
+
+        Returns:
+            dataframe -- overview data
+        """
+        with open("sql/overview_query.txt", "r") as file:
             sql = file.read()
-        sql = sql.format("%%", date=self.last_columns.iloc[0], ref=self.last_columns.iloc[1])
+        sql = sql.format(
+            "%%", date=self.last_columns.iloc[0], ref=self.last_columns.iloc[1]
+        )
         try:
             overview = pd.read_sql_query(sql, self.engine)
             return overview
         except Exception:
-            print("Overview Query Failed")
+            log.error("Overview Query Failed")
             return []
 
     def global_total(self):
@@ -103,15 +133,23 @@ class PostgresQueries(PostgresDB):
         return result
 
     def country_query(self, country):
-        with open("sql/sql_country_query.txt", "r") as file:
+        """Queries all time series data for a specified country.
+
+        Arguments:
+            country {string} -- country to query
+
+        Returns:
+            dataframe -- dataframe of country data
+        """
+        with open("sql/country_query.txt", "r") as file:
             sql = file.read()
         sql = sql.format(country=country.lower())
         try:
             results = pd.read_sql_query(sql, self.engine)
         except Exception:
-            log.warning("Data unavailable")
+            log.error("Data unavailable")
             return pd.DataFrame()
-        results['date'] = pd.to_datetime(results['date'], format="_%m_%d_%y")
+        results["date"] = pd.to_datetime(results["date"], format="_%m_%d_%y")
         results.set_index("date", inplace=True)
         results.drop_duplicates(inplace=True)
         return results
