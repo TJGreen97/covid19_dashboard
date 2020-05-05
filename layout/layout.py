@@ -24,7 +24,7 @@ layout = html.Div(
                             children=[  "Created by ",
                                         html.A("Torran Green", href='https://torrangreen.com', target="_blank"), 
                                         " using the Johns Hopkins University ",
-                                        html.A("dataset", href='https://console.cloud.google.com/marketplace/details/johnshopkins/covid19_jhu_global_cases', target="_blank")]
+                                        html.A("dataset", href='https://github.com/CSSEGISandData/COVID-19/tree/master/csse_covid_19_data/csse_covid_19_time_series', target="_blank")]
                         ),
                     ],
                     style=dict(marginLeft="20px", width="40%", padding="20px"),

@@ -16,9 +16,8 @@ from dash.exceptions import PreventUpdate
 from dash.dependencies import Output, Input, State
 import plotly.graph_objects as go
 import pandas as pd
-
+from utils.db_interface import PostgresQueries as PQ
 from layout.layout import layout
-from sql.queries import SQL
 
 # log.getLogger().setLevel(log.INFO)
 log.basicConfig(filename='logs\\covid-dash.log', level=log.DEBUG)
@@ -27,7 +26,7 @@ dset_order = ["confirmed_cases", "active_cases", "recovered_cases", "deaths"]
 bar_color = ["#7B4D80", "#3D8EDE", "#84CA72", "#D8555C"]
 color_select = dict(zip(dset_order, bar_color))
 
-sql = SQL()
+sql = PQ()
 
 app = dash.Dash(__name__)
 server = app.server
@@ -149,7 +148,7 @@ def page_load(_, fig):
         )
         n += 0.25
     disclaimer = "Data last updated: {:%d/%m/%y}".format(
-        datetime.strptime(sql.last_column, "_%m_%d_%y")
+        datetime.strptime(sql.last_columns[0], "_%m_%d_%y")
     )
     return fig, disclaimer
 

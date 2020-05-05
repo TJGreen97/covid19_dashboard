@@ -1,0 +1,5 @@
+SELECT column_name
+FROM information_schema.columns
+WHERE table_name = 'confirmed_cases' AND column_name like '\_%%'
+ORDER BY column_name DESC
+LIMIT 2

@@ -1,0 +1,27 @@
+SELECT SUM({date}) AS totals, 'deaths' AS dset, '{date}' AS id
+FROM deaths AS deaths
+                
+UNION ALL
+                
+SELECT SUM({date}), 'confirmed_cases', '{date}'
+FROM confirmed_cases AS confirmed_cases
+                
+UNION ALL
+                
+SELECT SUM({date}), 'recovered_cases', '{date}'
+FROM recovered_cases AS recovered_cases
+                
+UNION ALL
+                
+SELECT SUM({ref}), 'deaths' AS dset, '{ref}' AS id
+FROM deaths AS deaths
+                
+UNION ALL
+                
+SELECT SUM({ref}), 'confirmed_cases', '{ref}'
+FROM confirmed_cases AS confirmed_cases
+                
+UNION ALL
+      
+SELECT SUM({ref}), 'recovered_cases', '{ref}'
+FROM recovered_cases AS recovered_cases
