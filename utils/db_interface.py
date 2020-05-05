@@ -1,3 +1,14 @@
+"""COVID19 Dashboard by Torran Green
+
+All data is sourced from the Johns Hopkins University open dataset on GitHub.
+This dashboard is for educational use.
+----------------------------------------------------------------------------------------
+Module handles all Postgres DB tasks.
+    Creates and queries tables.
+
+Returns:
+    [type] -- [description]
+"""
 import os
 import logging as log
 
@@ -15,7 +26,8 @@ class PostgresDB:
         self,
         url="https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series/time_series_covid19_{}_global.csv",
     ):
-        """Creates the tables within the Postgres DB. Heroku is scheduled to call this function at 3am every day.
+        """Creates the tables within the Postgres DB.
+           Heroku is scheduled to call this function at 3am every day.
 
         Keyword Arguments:
             url {str} -- source of raw data

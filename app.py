@@ -1,12 +1,11 @@
 """
 COVID19 Dashboard by Torran Green
 
-All data is queried from the Johns Hopkins University open dataset on Google's BigQuery.
+All data is sourced from the Johns Hopkins University open dataset on GitHub.
 This dashboard is for educational use.
 ----------------------------------------------------------------------------------------
 Main module, including all callbacks and cached functions.
 """
-import os
 import logging as log
 from datetime import datetime
 from flask_caching import Cache
@@ -231,7 +230,6 @@ def update_pie(data, fig):
         dict -- updated figure dict
     """
     labels = ["active_cases", "recovered_cases", "deaths"]
-    
     data = data[labels]
     fig["data"] = [
         dict(

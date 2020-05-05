@@ -1,7 +1,7 @@
 """
 COVID19 Dashboard by Torran Green
 
-All data is queried from the Johns Hopkins University open dataset on Google's BigQuery.
+All data is sourced from the Johns Hopkins University open dataset on GitHub.
 This dashboard is for educational use.
 ----------------------------------------------------------------------------------------
 Layout module, describing the dashboard layout. The '.\assets\' directory contains CSS
