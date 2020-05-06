@@ -2,8 +2,6 @@ import pandas_gbq
 import pandas as pd
 import os
 from datetime import datetime
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "config/my-covid-project.json"
-
 
 class BQ:
     def __init__(self):
