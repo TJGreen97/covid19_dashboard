@@ -263,7 +263,8 @@ def update_line(data, fig):
     fig = go.Figure()
     for dset in dset_order:
         y = data[dset]
-        y = y[y != 0]
+        idx = y.ne(0).idxmax()
+        y = y[idx:]
         x = y.index
         fig.add_trace(
             go.Scatter(
@@ -312,7 +313,8 @@ def update_rates_bar(data, fig):
     dsets = [dset for dset in dset_order if dset != 'active_cases']
     for dset in dsets:
         y = data[dset].diff()
-        y = y[y != 0]
+        idx = y.ne(0).idxmax()
+        y = y[idx:]
         y.dropna(inplace=True)
         x = y.index
         fig["data"].append(
