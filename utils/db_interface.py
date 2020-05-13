@@ -84,6 +84,7 @@ class PostgresQueries(PostgresDB):
     def __init__(self):
         PostgresDB.__init__(self)
         self.last_columns = self.find_last_columns()
+        print(self.last_columns)
 
     def find_last_columns(self):
         """Determines the last columns added to the tables.
@@ -95,6 +96,12 @@ class PostgresQueries(PostgresDB):
             sql = file.read()
         try:
             out = pd.read_sql_query(sql, self.engine)
+            out = out['column_name'].str.split(pat='_', expand=True).drop([0], axis=1)
+            out = out.loc[out[3] == out[3].max()]
+            out = out.loc[out[1] == out[1].max()]
+            out[2] = out[2].astype(int)
+            out = out.sort_values(by=[2], ascending=False)[0:2].astype(str).reset_index()
+            out['column_name'] = '_' + out[1] + '_' + out[2] + '_' + out[3]
             return out["column_name"]
         except Exception:
             log.error("Last column not found")
